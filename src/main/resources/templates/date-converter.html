@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>UNIX時間⇄日付変換ツール</title>
+    <meta name="description" content="UNIX時間と日付を相互に変換する無料ツール。タイムゾーンやフォーマット指定にも対応。">
+    <style>
+        body { font-family: sans-serif; margin: 40px auto; max-width: 600px; text-align: center; }
+        input, select { padding: 6px; margin: 4px; width: 80%; }
+        button { padding: 8px 16px; margin: 10px; cursor: pointer; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>UNIX時間 ⇄ 日付変換ツール</h1>
+
+    <form method="post" th:action="@{/date-converter}">
+        <label>モード：</label>
+        <select name="mode">
+            <option th:selected="${mode == 'unix2date'}" value="unix2date">UNIX → Date</option>
+            <option th:selected="${mode == 'date2unix'}" value="date2unix">Date → UNIX</option>
+        </select><br>
+
+        <label>値：</label>
+        <input type="text" name="value" th:value="${input}" placeholder="例: 1737281920 または 2025-01-19 10:45:20"><br>
+
+        <label>タイムゾーン：</label>
+        <input type="text" name="tz" th:value="${tz}" placeholder="例: Asia/Tokyo"><br>
+
+        <label>フォーマット：</label>
+        <input type="text" name="format" th:value="${format}" placeholder="yyyy-MM-dd HH:mm:ss"><br>
+
+        <button type="submit">変換</button>
+    </form>
+
+    <div class="result" th:if="${output}">
+        <p>変換結果：</p>
+        <div th:text="${output}"></div>
+    </div>
+
+    <hr>
+    <footer>
+        <p><a href="/tools/char-count">→ 文字数カウントツール（近日公開）</a></p>
+    </footer>
+</body>
+</html>
