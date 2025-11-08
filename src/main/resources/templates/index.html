@@ -1,9 +1,41 @@
-<div>
-    <h2>利用可能なツール一覧</h2>
-    <ul>
-        <li><a th:href="@{/json-csv}">JSON⇄CSV変換ツール</a></li>
-        <li><a th:href="@{/date-format}">日付フォーマット変換</a></li>
-        <li><a th:href="@{/text-escape}">テキストエスケープ変換</a></li>
-        <li><a th:href="@{/base64}">Base64エンコード・デコード</a></li>
-    </ul>
+<div class="container">
+    <h1 class="mb-4">🧰 ツール集サイト</h1>
+    <p>よく使う便利なツールをまとめています。</p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-3">
+
+        <!-- JSON⇄CSVツール -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">JSON ⇄ CSV変換</h5>
+                    <p class="card-text">JSONとCSVを相互に変換できます。</p>
+                    <a href="/json-csv" class="btn btn-primary">使う</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日付フォーマット変換 -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">日付フォーマット変換</h5>
+                    <p class="card-text">日付の形式を自由に変換できます。</p>
+                    <a href="/date-format" class="btn btn-primary">使う</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 今後追加するツールのサンプルカード -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">文字列変換ツール</h5>
+                    <p class="card-text">大文字・小文字変換やURLエンコード/デコードを予定。</p>
+                    <a href="#" class="btn btn-secondary disabled">準備中</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
