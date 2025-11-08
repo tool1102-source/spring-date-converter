@@ -1,0 +1,47 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">文字列変換ツール</h2>
+
+    <form th:action="@{/text-tools/convert}" method="post">
+        <div class="mb-3">
+            <label class="form-label fw-bold">入力文字列</label>
+            <textarea class="form-control" name="inputText" rows="5"
+                      placeholder="変換したい文字列を入力"
+                      th:text="${inputText}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">変換方法</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="operation" value="uppercase"
+                       th:checked="${operation} == null or ${operation} == 'uppercase'">
+                <label class="form-check-label">大文字</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="operation" value="lowercase"
+                       th:checked="${operation} == 'lowercase'">
+                <label class="form-check-label">小文字</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="operation" value="url-encode"
+                       th:checked="${operation} == 'url-encode'">
+                <label class="form-check-label">URLエンコード</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="operation" value="url-decode"
+                       th:checked="${operation} == 'url-decode'">
+                <label class="form-check-label">URLデコード</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">変換する</button>
+    </form>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">結果</label>
+        <textarea class="form-control" rows="5" readonly th:text="${result}"></textarea>
+    </div>
+</div>
