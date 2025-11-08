@@ -1,0 +1,36 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">日付操作ツール</h2>
+
+    <!-- 曜日取得フォーム -->
+    <form th:action="@{/date-tools/calc}" method="post" class="mb-4">
+        <input type="hidden" name="operation" value="weekday">
+        <div class="mb-3">
+            <label class="form-label fw-bold">日付（yyyy-MM-dd）</label>
+            <input type="text" class="form-control" name="date" th:value="${date}" placeholder="例: 2025-11-08">
+        </div>
+        <button type="submit" class="btn btn-primary">曜日を取得</button>
+    </form>
+
+    <!-- 期間計算フォーム -->
+    <form th:action="@{/date-tools/calc}" method="post" class="mb-4">
+        <input type="hidden" name="operation" value="period">
+        <div class="mb-3">
+            <label class="form-label fw-bold">開始日（yyyy-MM-dd）</label>
+            <input type="text" class="form-control" name="startDate" th:value="${startDate}" placeholder="例: 2025-11-01">
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">終了日（yyyy-MM-dd）</label>
+            <input type="text" class="form-control" name="endDate" th:value="${endDate}" placeholder="例: 2025-11-08">
+        </div>
+        <button type="submit" class="btn btn-primary">期間を計算</button>
+    </form>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">結果</label>
+        <textarea class="form-control" rows="3" readonly th:text="${result}"></textarea>
+    </div>
+</div>
