@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Date Converter</title>
-</head>
-<body>
-    <h1>🗓️ 日付フォーマット変換ツール</h1>
-
-    <form action="/convert" method="post">
-        <label>変換したい日付文字列:</label><br>
-        <input type="text" name="inputDate" placeholder="例: 2025/10/22 14:30" size="30" required><br><br>
-
-        <label>出力フォーマット:</label><br>
-        <input type="text" name="outputFormat" value="yyyy-MM-dd'T'HH:mm:ss" size="30"><br><br>
-
-        <button type="submit">変換する</button>
-    </form>
-
-    <hr>
-
-    <div th:if="${result}">
-        <h3>変換結果:</h3>
-        <p th:text="${result}"></p>
-    </div>
-
-    <div th:if="${error}">
-        <h3 style="color:red;">エラー:</h3>
-        <p th:text="${error}"></p>
-    </div>
-</body>
-</html>
+<div>
+    <h2>利用可能なツール一覧</h2>
+    <ul>
+        <li><a th:href="@{/json-csv}">JSON⇄CSV変換ツール</a></li>
+        <li><a th:href="@{/date-format}">日付フォーマット変換</a></li>
+        <li><a th:href="@{/text-escape}">テキストエスケープ変換</a></li>
+        <li><a th:href="@{/base64}">Base64エンコード・デコード</a></li>
+    </ul>
+</div>

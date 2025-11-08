@@ -1,0 +1,23 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background-color: #f8f8f8;
+}
+
+header h1 a {
+    color: #333;
+    text-decoration: none;
+}
+
+nav a {
+    color: #0077cc;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+main {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}

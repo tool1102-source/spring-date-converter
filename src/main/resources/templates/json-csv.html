@@ -1,0 +1,32 @@
+<div>
+    <h2>JSON ⇄ CSV 変換ツール</h2>
+
+    <form th:action="@{/json-csv/convert}" method="post">
+        <label>
+            <input type="radio" name="mode" value="jsonToCsv" 
+                   th:checked="${mode} == null or ${mode} == 'jsonToCsv'"> JSON → CSV
+        </label>
+        <label>
+            <input type="radio" name="mode" value="csvToJson"
+                   th:checked="${mode} == 'csvToJson'"> CSV → JSON
+        </label>
+        <br><br>
+
+        <textarea name="inputText" rows="10" cols="80" 
+                  placeholder="ここにJSONまたはCSVを入力してください"
+                  th:text="${inputText}"></textarea>
+        <br><br>
+
+        <button type="submit">変換する</button>
+    </form>
+
+    <br>
+    <div th:if="${error != null}">
+        <p style="color:red;" th:text="${error}"></p>
+    </div>
+
+    <div th:if="${result != null}">
+        <h3>結果:</h3>
+        <textarea rows="10" cols="80" readonly th:text="${result}"></textarea>
+    </div>
+</div>

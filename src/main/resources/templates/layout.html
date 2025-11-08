@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'ツール集サイト'">ツール集サイト</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1><a th:href="@{/}">ツール集サイト</a></h1>
+        <nav>
+            <a th:href="@{/json-csv}">JSON⇄CSV</a> |
+            <a th:href="@{/date-format}">日付変換</a> |
+            <a th:href="@{/text-escape}">テキスト整形</a> |
+            <a th:href="@{/base64}">Base64</a>
+        </nav>
+        <hr/>
+    </header>
+
+    <main>
+        <!-- 各ページごとの内容をここに挿入 -->
+        <div th:replace="${content}"></div>
+    </main>
+
+    <footer>
+        <hr/>
+        <p>© 2025 MyToolHub</p>
+    </footer>
+</body>
+</html>
