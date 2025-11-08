@@ -1,0 +1,38 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">日付フォーマット変換ツール</h2>
+
+    <form th:action="@{/date-format/convert}" method="post">
+        <div class="mb-3">
+            <label class="form-label fw-bold">変換したい日付</label>
+            <input class="form-control" type="text" name="inputDate"
+                   placeholder="例: 2025-11-08 09:30:00"
+                   th:value="${inputDate}">
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label fw-bold">入力フォーマット</label>
+                <input class="form-control" type="text" name="inputFormat"
+                       placeholder="例: yyyy-MM-dd HH:mm:ss"
+                       th:value="${inputFormat}">
+            </div>
+            <div class="col">
+                <label class="form-label fw-bold">出力フォーマット</label>
+                <input class="form-control" type="text" name="outputFormat"
+                       placeholder="例: yyyy/MM/dd"
+                       th:value="${outputFormat}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">変換する</button>
+    </form>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">結果</label>
+        <input class="form-control" type="text" readonly th:value="${result}">
+    </div>
+</div>
