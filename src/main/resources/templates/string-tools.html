@@ -1,0 +1,40 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">文字列操作ツール</h2>
+
+    <!-- 正規表現置換フォーム -->
+    <form th:action="@{/string-tools/process}" method="post" class="mb-4">
+        <input type="hidden" name="operation" value="regex-replace">
+        <div class="mb-3">
+            <label class="form-label fw-bold">入力文字列</label>
+            <textarea class="form-control" name="inputText" rows="4" th:text="${inputText}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">検索（正規表現）</label>
+            <input type="text" class="form-control" name="regex" th:value="${regex}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">置換文字列</label>
+            <input type="text" class="form-control" name="replacement" th:value="${replacement}">
+        </div>
+        <button type="submit" class="btn btn-primary">置換する</button>
+    </form>
+
+    <!-- 文字数カウントフォーム -->
+    <form th:action="@{/string-tools/process}" method="post" class="mb-4">
+        <input type="hidden" name="operation" value="count">
+        <div class="mb-3">
+            <label class="form-label fw-bold">文字列</label>
+            <textarea class="form-control" name="inputText" rows="3" th:text="${inputText}"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">文字数をカウント</button>
+    </form>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">結果</label>
+        <textarea class="form-control" rows="3" readonly th:text="${result}"></textarea>
+    </div>
+</div>
