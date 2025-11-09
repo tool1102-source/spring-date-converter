@@ -1,0 +1,32 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">PDFツール</h2>
+
+    <div class="mb-4">
+        <h5>🔽 PDF → テキスト</h5>
+        <form th:action="@{/file/pdf/pdf-to-text}" method="post" enctype="multipart/form-data">
+            <div class="mb-2">
+                <input type="file" name="file" accept="application/pdf" required>
+            </div>
+            <button type="submit" class="btn btn-primary">抽出して表示</button>
+        </form>
+    </div>
+
+    <div class="mb-4">
+        <h5>🔼 テキスト → PDF</h5>
+        <form th:action="@{/file/pdf/text-to-pdf}" method="post">
+            <div class="mb-2">
+                <textarea name="text" class="form-control" rows="8" placeholder="ここにテキストを入力"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">PDFを生成してダウンロード</button>
+        </form>
+    </div>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">抽出結果</label>
+        <textarea class="form-control" rows="10" readonly th:text="${result}"></textarea>
+    </div>
+</div>

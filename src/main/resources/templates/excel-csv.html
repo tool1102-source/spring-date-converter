@@ -1,0 +1,32 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">Excel ⇄ CSV 変換</h2>
+
+    <div class="mb-4">
+        <h5>🔽 XLSX → CSV（アップロードしてCSVを画面表示）</h5>
+        <form th:action="@{/file/excel-csv/xlsx-to-csv}" method="post" enctype="multipart/form-data">
+            <div class="mb-2">
+                <input type="file" name="file" accept=".xlsx" required>
+            </div>
+            <button type="submit" class="btn btn-primary">変換して表示</button>
+        </form>
+    </div>
+
+    <div class="mb-4">
+        <h5>🔼 CSV → XLSX（アップロードしてXLSXをダウンロード）</h5>
+        <form th:action="@{/file/excel-csv/csv-to-xlsx}" method="post" enctype="multipart/form-data">
+            <div class="mb-2">
+                <input type="file" name="file" accept=".csv,text/csv" required>
+            </div>
+            <button type="submit" class="btn btn-primary">変換してダウンロード</button>
+        </form>
+    </div>
+
+    <div class="mt-4" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="mt-4" th:if="${result != null}">
+        <label class="form-label fw-bold">CSV結果</label>
+        <textarea class="form-control" rows="10" readonly th:text="${result}"></textarea>
+    </div>
+</div>
