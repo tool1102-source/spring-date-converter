@@ -9,29 +9,22 @@
 <div class="container">
     <h1>テキスト → PDF変換ツール</h1>
 
-    <!-- ✅ コントローラーと一致する form -->
     <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="textFile">テキストファイルを選択 (.txt)</label><br>
-            <input type="file" id="textFile" name="textFile" accept=".txt" required>
-        </div>
-
+        <label for="textFile">テキストファイルを選択 (.txt)</label><br>
+        <input type="file" id="textFile" name="textFile" accept=".txt" required>
         <button type="submit">PDFに変換</button>
     </form>
 
-    <!-- ✅ メッセージ / エラー表示 -->
-    <div th:if="${message}" class="message">
+    <div th:if="${message}">
         <p th:text="${message}"></p>
-        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">変換後のPDFをダウンロード</a>
+        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">ダウンロード</a>
     </div>
 
-    <div th:if="${error}" class="error">
+    <div th:if="${error}">
         <p th:text="${error}"></p>
     </div>
 
-    <div class="back-link">
-        <a th:href="@{/}">← トップに戻る</a>
-    </div>
+    <a th:href="@{/}">← トップページに戻る</a>
 </div>
 </body>
 </html>

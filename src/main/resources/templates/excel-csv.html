@@ -9,38 +9,28 @@
 <div class="container">
     <h1>Excel ⇄ CSV変換ツール</h1>
 
-    <!-- ✅ Excel → CSV -->
     <form th:action="@{/excel-to-csv}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="excelFile">Excelファイルを選択 (.xlsx)</label><br>
-            <input type="file" id="excelFile" name="file" accept=".xlsx" required>
-        </div>
-        <button type="submit">Excel → CSVに変換</button>
+        <label for="excelFile">Excelファイルを選択 (.xlsx)</label><br>
+        <input type="file" id="excelFile" name="file" accept=".xlsx" required>
+        <button type="submit">Excel → CSV</button>
     </form>
 
-    <hr>
-
-    <!-- ✅ CSV → Excel -->
     <form th:action="@{/csv-to-excel}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="csvFile">CSVファイルを選択 (.csv)</label><br>
-            <input type="file" id="csvFile" name="file" accept=".csv" required>
-        </div>
-        <button type="submit">CSV → Excelに変換</button>
+        <label for="csvFile">CSVファイルを選択 (.csv)</label><br>
+        <input type="file" id="csvFile" name="file" accept=".csv" required>
+        <button type="submit">CSV → Excel</button>
     </form>
 
-    <div th:if="${message}" class="message">
+    <div th:if="${message}">
         <p th:text="${message}"></p>
-        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">変換後のファイルをダウンロード</a>
+        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">ダウンロード</a>
     </div>
 
-    <div th:if="${error}" class="error">
+    <div th:if="${error}">
         <p th:text="${error}"></p>
     </div>
 
-    <div class="back-link">
-        <a th:href="@{/}">← トップに戻る</a>
-    </div>
+    <a th:href="@{/}">← トップページに戻る</a>
 </div>
 </body>
 </html>
