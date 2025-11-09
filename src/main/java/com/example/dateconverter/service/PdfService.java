@@ -21,16 +21,13 @@ public class PdfService {
 
         // フォント読み込み（クラウド・ローカル対応）
         PDType0Font font;
-        try (InputStream fontStream = getClass().getResourceAsStream("/fonts/NotoSansCJKjp-Regular.otf")) {
+        try (InputStream fontStream = getClass().getResourceAsStream("/fonts/NotoSansCJKjp-VF.ttf")) {
             if (fontStream != null) {
                 font = PDType0Font.load(document, fontStream);
             } else {
-                // 万一フォントが読み込めなければシステムフォントで代用
-                File tempFont = new File("C:/Windows/Fonts/msgothic.ttc");
-                if (!tempFont.exists()) {
-                    tempFont = new File("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc");
-                }
-                font = PDType0Font.load(document, tempFont);
+                // ローカル・OSフォントにフォールバック
+                File fontFile = new File("C:/Windows/Fonts/msgothic.ttc");
+                font = PDType0Font.load(document, fontFile);
             }
         }
 
@@ -53,6 +50,7 @@ public class PdfService {
             document.save(out);
         }
         document.close();
+
 
         return tempFile;
     }
