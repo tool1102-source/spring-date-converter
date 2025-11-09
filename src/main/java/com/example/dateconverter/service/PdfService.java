@@ -4,47 +4,56 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 @Service
 public class PdfService {
 
-    public File textToPdf(String text) throws IOException {
-        File pdfFile = File.createTempFile("converted_", ".pdf");
+    public File textToPdf(String text) throws Exception {
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        document.addPage(page);
 
-        try (PDDocument doc = new PDDocument()) {
-            PDPage page = new PDPage();
-            doc.addPage(page);
-
-            PDType0Font font = null;
-
-            // フォントを読み込み（なければ Helvetica を使用）
-            InputStream fontStream = PdfService.class.getResourceAsStream("/fonts/NotoSansCJKjp-Regular.otf");
+        // フォント読み込み（クラウド・ローカル対応）
+        PDType0Font font;
+        try (InputStream fontStream = getClass().getResourceAsStream("/fonts/NotoSansCJKjp-Regular.otf")) {
             if (fontStream != null) {
-                font = PDType0Font.load(doc, fontStream);
+                font = PDType0Font.load(document, fontStream);
             } else {
-                font = PDType0Font.load(doc, new File("C:/Windows/Fonts/msgothic.ttc")); // Windows用フォールバック
-            }
-
-            try (PDPageContentStream contentStream = new PDPageContentStream(doc, page)) {
-                contentStream.beginText();
-                contentStream.setFont(font != null ? font : PDType1Font.HELVETICA, 12);
-                contentStream.newLineAtOffset(50, 750);
-
-                for (String line : text.split("\n")) {
-                    contentStream.showText(line);
-                    contentStream.newLineAtOffset(0, -15);
+                // 万一フォントが読み込めなければシステムフォントで代用
+                File tempFont = new File("C:/Windows/Fonts/msgothic.ttc");
+                if (!tempFont.exists()) {
+                    tempFont = new File("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc");
                 }
-
-                contentStream.endText();
+                font = PDType0Font.load(document, tempFont);
             }
-
-            doc.save(pdfFile);
         }
 
-        return pdfFile;
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        contentStream.beginText();
+        contentStream.setFont(font, 12);
+        contentStream.newLineAtOffset(50, 700);
+
+        for (String line : text.split("\n")) {
+            contentStream.showText(line);
+            contentStream.newLineAtOffset(0, -15);
+        }
+
+        contentStream.endText();
+        contentStream.close();
+
+        // 一時ファイルとしてPDF保存
+        File tempFile = Files.createTempFile("text-to-pdf-", ".pdf").toFile();
+        try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            document.save(out);
+        }
+        document.close();
+
+        return tempFile;
     }
 }
