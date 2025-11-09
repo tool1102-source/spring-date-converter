@@ -9,27 +9,33 @@
 </head>
 <body>
 <div class="container mt-4">
-    <div class="card shadow-sm border-dark">
-        <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-file-earmark-pdf"></i> テキスト → PDF変換</h5>
-            <p class="card-text">テキストファイルをアップロードしてPDFに変換できます。</p>
+    <div class="row row-cols-1 row-cols-md-1 g-4">
 
-            <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data">
-                <input type="file" name="textFile" accept=".txt" class="form-control mb-2" required>
-                <button type="submit" class="btn btn-primary">PDFに変換</button>
-            </form>
+        <div class="col">
+            <div class="card h-100 shadow-sm border-dark">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-pdf"></i> テキスト → PDF変換</h5>
+                    <p class="card-text">テキストファイルをアップロードしてPDFに変換できます。</p>
 
-            <div th:if="${message}" class="alert alert-success mt-2">
-                <p th:text="${message}"></p>
-                <a th:if="${downloadLink}" th:href="${downloadLink}" class="btn btn-outline-primary btn-sm mt-1" target="_blank">ダウンロード</a>
+                    <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data">
+                        <input type="file" name="textFile" accept=".txt" class="form-control mb-2" required>
+                        <button type="submit" class="btn btn-primary">PDFに変換</button>
+                    </form>
+
+                    <div th:if="${message}" class="alert alert-success mt-2">
+                        <p th:text="${message}"></p>
+                        <a th:if="${downloadLink}" th:href="${downloadLink}" class="btn btn-outline-primary btn-sm mt-1" target="_blank">ダウンロード</a>
+                    </div>
+
+                    <div th:if="${error}" class="alert alert-danger mt-2">
+                        <p th:text="${error}"></p>
+                    </div>
+
+                    <a th:href="@{/}" class="btn btn-link mt-3">← トップページに戻る</a>
+                </div>
             </div>
-
-            <div th:if="${error}" class="alert alert-danger mt-2">
-                <p th:text="${error}"></p>
-            </div>
-
-            <a th:href="@{/}" class="btn btn-link mt-3">← トップページに戻る</a>
         </div>
+
     </div>
 </div>
 </body>
