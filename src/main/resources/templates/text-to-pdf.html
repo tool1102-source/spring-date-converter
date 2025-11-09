@@ -23,9 +23,9 @@
         <div class="alert alert-danger" th:text="${error}"></div>
     </div>
 
-    <div class="mt-4" th:if="${message != null}">
+    <div class="mt-4" th:if="${result != null}">
         <label class="form-label fw-bold">結果</label>
-        <textarea class="form-control" rows="5" readonly th:text="${message}"></textarea>
-        <a th:if="${downloadLink}" th:href="${downloadLink}" class="btn btn-outline-primary btn-sm mt-2" target="_blank">ダウンロード</a>
+        <textarea class="form-control" rows="5" readonly th:text="${result}"></textarea>
+        <a th:if="${downloadLink != null}" th:href="${downloadLink}" class="btn btn-outline-primary btn-sm mt-2" target="_blank">ダウンロード</a>
     </div>
 </div>
