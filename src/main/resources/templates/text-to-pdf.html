@@ -2,25 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>テキスト → PDF変換ツール</title>
+    <title>テキスト → PDF変換</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body class="tool-page">
+<body>
 <div class="container">
     <h1>テキスト → PDF変換ツール</h1>
 
     <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data">
-        <label for="textFile">テキストファイルを選択 (.txt)</label><br>
-        <input type="file" id="textFile" name="textFile" accept=".txt" required>
+        <input type="file" name="textFile" accept=".txt" required>
         <button type="submit">PDFに変換</button>
     </form>
 
-    <div th:if="${message}">
+    <div th:if="${message}" class="message success">
         <p th:text="${message}"></p>
         <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">ダウンロード</a>
     </div>
 
-    <div th:if="${error}">
+    <div th:if="${error}" class="message error">
         <p th:text="${error}"></p>
     </div>
 

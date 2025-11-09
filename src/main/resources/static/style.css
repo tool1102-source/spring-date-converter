@@ -1,23 +1,74 @@
 body {
-    font-family: sans-serif;
-    margin: 20px;
-    background-color: #f8f8f8;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
 }
 
-header h1 a {
-    color: #333;
-    text-decoration: none;
-}
-
-nav a {
-    color: #0077cc;
-    text-decoration: none;
-    margin-right: 10px;
-}
-
-main {
-    background: #fff;
+.container {
+    max-width: 800px;
+    margin: 40px auto;
     padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input[type="file"] {
+    padding: 10px;
+}
+
+button {
+    width: 150px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.message.success {
+    background-color: #e0f7e9;
+    color: #2e7d32;
+}
+
+.message.error {
+    background-color: #fbeaea;
+    color: #c62828;
+}
+
+a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #2196F3;
+}
+
+a:hover {
+    text-decoration: underline;
 }

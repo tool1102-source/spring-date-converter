@@ -2,31 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Excel ⇄ CSV変換ツール</title>
+    <title>Excel ⇄ CSV変換</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body class="tool-page">
+<body>
 <div class="container">
     <h1>Excel ⇄ CSV変換ツール</h1>
 
     <form th:action="@{/excel-to-csv}" method="post" enctype="multipart/form-data">
-        <label for="excelFile">Excelファイルを選択 (.xlsx)</label><br>
-        <input type="file" id="excelFile" name="file" accept=".xlsx" required>
+        <input type="file" name="file" accept=".xlsx" required>
         <button type="submit">Excel → CSV</button>
     </form>
 
     <form th:action="@{/csv-to-excel}" method="post" enctype="multipart/form-data">
-        <label for="csvFile">CSVファイルを選択 (.csv)</label><br>
-        <input type="file" id="csvFile" name="file" accept=".csv" required>
+        <input type="file" name="file" accept=".csv" required>
         <button type="submit">CSV → Excel</button>
     </form>
 
-    <div th:if="${message}">
+    <div th:if="${message}" class="message success">
         <p th:text="${message}"></p>
         <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">ダウンロード</a>
     </div>
 
-    <div th:if="${error}">
+    <div th:if="${error}" class="message error">
         <p th:text="${error}"></p>
     </div>
 
