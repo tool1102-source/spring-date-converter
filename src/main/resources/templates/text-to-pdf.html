@@ -1,32 +1,37 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">PDFツール</h2>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>テキスト → PDF変換ツール</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="tool-page">
+<div class="container">
+    <h1>テキスト → PDF変換ツール</h1>
 
-    <div class="mb-4">
-        <h5>🔽 PDF → テキスト</h5>
-        <form th:action="@{/file/pdf/pdf-to-text}" method="post" enctype="multipart/form-data">
-            <div class="mb-2">
-                <input type="file" name="file" accept="application/pdf" required>
-            </div>
-            <button type="submit" class="btn btn-primary">抽出して表示</button>
-        </form>
+    <!-- ✅ コントローラーと一致する form -->
+    <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="textFile">テキストファイルを選択 (.txt)</label><br>
+            <input type="file" id="textFile" name="textFile" accept=".txt" required>
+        </div>
+
+        <button type="submit">PDFに変換</button>
+    </form>
+
+    <!-- ✅ メッセージ / エラー表示 -->
+    <div th:if="${message}" class="message">
+        <p th:text="${message}"></p>
+        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">変換後のPDFをダウンロード</a>
     </div>
 
-    <div class="mb-4">
-        <h5>🔼 テキスト → PDF</h5>
-        <form th:action="@{/file/pdf/text-to-pdf}" method="post">
-            <div class="mb-2">
-                <textarea name="text" class="form-control" rows="8" placeholder="ここにテキストを入力"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">PDFを生成してダウンロード</button>
-        </form>
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
     </div>
 
-    <div class="mt-4" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
-    </div>
-
-    <div class="mt-4" th:if="${result != null}">
-        <label class="form-label fw-bold">抽出結果</label>
-        <textarea class="form-control" rows="10" readonly th:text="${result}"></textarea>
+    <div class="back-link">
+        <a th:href="@{/}">← トップに戻る</a>
     </div>
 </div>
+</body>
+</html>

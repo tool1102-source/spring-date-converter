@@ -1,32 +1,46 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">Excel ⇄ CSV 変換</h2>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel ⇄ CSV変換ツール</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="tool-page">
+<div class="container">
+    <h1>Excel ⇄ CSV変換ツール</h1>
 
-    <div class="mb-4">
-        <h5>🔽 XLSX → CSV（アップロードしてCSVを画面表示）</h5>
-        <form th:action="@{/file/excel-csv/xlsx-to-csv}" method="post" enctype="multipart/form-data">
-            <div class="mb-2">
-                <input type="file" name="file" accept=".xlsx" required>
-            </div>
-            <button type="submit" class="btn btn-primary">変換して表示</button>
-        </form>
+    <!-- ✅ Excel → CSV -->
+    <form th:action="@{/excel-to-csv}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="excelFile">Excelファイルを選択 (.xlsx)</label><br>
+            <input type="file" id="excelFile" name="file" accept=".xlsx" required>
+        </div>
+        <button type="submit">Excel → CSVに変換</button>
+    </form>
+
+    <hr>
+
+    <!-- ✅ CSV → Excel -->
+    <form th:action="@{/csv-to-excel}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="csvFile">CSVファイルを選択 (.csv)</label><br>
+            <input type="file" id="csvFile" name="file" accept=".csv" required>
+        </div>
+        <button type="submit">CSV → Excelに変換</button>
+    </form>
+
+    <div th:if="${message}" class="message">
+        <p th:text="${message}"></p>
+        <a th:if="${downloadLink}" th:href="${downloadLink}" target="_blank">変換後のファイルをダウンロード</a>
     </div>
 
-    <div class="mb-4">
-        <h5>🔼 CSV → XLSX（アップロードしてXLSXをダウンロード）</h5>
-        <form th:action="@{/file/excel-csv/csv-to-xlsx}" method="post" enctype="multipart/form-data">
-            <div class="mb-2">
-                <input type="file" name="file" accept=".csv,text/csv" required>
-            </div>
-            <button type="submit" class="btn btn-primary">変換してダウンロード</button>
-        </form>
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
     </div>
 
-    <div class="mt-4" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
-    </div>
-
-    <div class="mt-4" th:if="${result != null}">
-        <label class="form-label fw-bold">CSV結果</label>
-        <textarea class="form-control" rows="10" readonly th:text="${result}"></textarea>
+    <div class="back-link">
+        <a th:href="@{/}">← トップに戻る</a>
     </div>
 </div>
+</body>
+</html>
