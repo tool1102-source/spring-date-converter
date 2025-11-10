@@ -1,0 +1,42 @@
+<div class="card shadow-sm p-4">
+    <h2 class="mb-3">📄 PDFツール</h2>
+    <p class="text-muted">テキストをPDF化、またはPDFからテキストを抽出します。</p>
+
+    <!-- テキスト → PDF -->
+    <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
+        <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-filetype-txt"></i> テキスト → PDF 変換</h5>
+        <div class="mb-3">
+            <label class="form-label fw-bold">テキストファイル (.txt)</label>
+            <input type="file" name="textFile" accept=".txt" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-file-earmark-pdf"></i> PDFに変換
+        </button>
+    </form>
+
+    <!-- PDF → テキスト -->
+    <form th:action="@{/pdf-to-text}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
+        <h5 class="fw-bold mb-3 text-success"><i class="bi bi-filetype-pdf"></i> PDF → テキスト 変換</h5>
+        <div class="mb-3">
+            <label class="form-label fw-bold">PDFファイル (.pdf)</label>
+            <input type="file" name="pdfFile" accept=".pdf" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-filetype-txt"></i> テキストに変換
+        </button>
+    </form>
+
+    <!-- エラー表示 -->
+    <div class="mt-3" th:if="${error != null}">
+        <div class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <!-- 結果表示 -->
+    <div class="mt-4" th:if="${message != null}">
+        <label class="form-label fw-bold">変換結果</label>
+        <textarea class="form-control" rows="6" readonly th:text="${message}"></textarea>
+        <a th:if="${downloadLink}" th:href="${downloadLink}" class="btn btn-outline-primary btn-sm mt-3" target="_blank">
+            <i class="bi bi-download"></i> ダウンロード
+        </a>
+    </div>
+</div>

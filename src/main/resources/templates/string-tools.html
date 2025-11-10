@@ -1,6 +1,5 @@
 <div class="card shadow-sm p-4">
     <h2 class="mb-3">文字列操作ツール</h2>
-
     <!-- 正規表現置換フォーム -->
     <form th:action="@{/string-tools/process}" method="post" class="mb-4">
         <input type="hidden" name="operation" value="regex-replace">
@@ -37,4 +36,5 @@
         <label class="form-label fw-bold">結果</label>
         <textarea class="form-control" rows="3" readonly th:text="${result}"></textarea>
     </div>
+
 </div>
