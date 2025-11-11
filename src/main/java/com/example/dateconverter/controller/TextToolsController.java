@@ -14,7 +14,15 @@ public class TextToolsController {
 
     @GetMapping("/text-tools")
     public String showPage(Model model) {
-        model.addAttribute("pageTitle", "文字列変換ツール");
+        // 🚨 SEO修正: pageTitleを最適化
+        model.addAttribute("pageTitle", "テキスト・エンコード/デコード変換ツール");
+        
+        // 🚨 新規追加: metaDescriptionを追加
+        model.addAttribute("metaDescription", "Base64、URLエンコード/デコード、大文字・小文字、全角・半角変換など、様々な文字列のエンコーディングと変換を一括で行える無料オンラインツール。");
+        
+        // 🚨 独自ドメイン設定: Canonical URLを設定
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/text-tools");
+        
         model.addAttribute("content", "text-tools");
         return "layout";
     }
@@ -34,7 +42,11 @@ public class TextToolsController {
             error = "変換に失敗しました: " + e.getMessage();
         }
 
-        model.addAttribute("pageTitle", "文字列変換ツール");
+        // 🚨 POST処理後もメタデータを再設定
+        model.addAttribute("pageTitle", "テキスト・エンコード/デコード変換ツール");
+        model.addAttribute("metaDescription", "Base64、URLエンコード/デコード、大文字・小文字、全角・半角変換など、様々な文字列のエンコーディングと変換を一括で行える無料オンラインツール。");
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/text-tools");
+        
         model.addAttribute("content", "text-tools");
         model.addAttribute("inputText", inputText);
         model.addAttribute("operation", operation);

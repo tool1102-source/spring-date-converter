@@ -1,40 +1,78 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">文字列操作ツール</h2>
-    <!-- 正規表現置換フォーム -->
-    <form th:action="@{/string-tools/process}" method="post" class="mb-4">
-        <input type="hidden" name="operation" value="regex-replace">
-        <div class="mb-3">
-            <label class="form-label fw-bold">入力文字列</label>
-            <textarea class="form-control" name="inputText" rows="4" th:text="${inputText}"></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">検索（正規表現）</label>
-            <input type="text" class="form-control" name="regex" th:value="${regex}">
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">置換文字列</label>
-            <input type="text" class="form-control" name="replacement" th:value="${replacement}">
-        </div>
-        <button type="submit" class="btn btn-primary">置換する</button>
-    </form>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-info">⚙️ 文字列操作・整形ツール（正規表現・置換・抽出）</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        <strong>正規表現（Regex）</strong>を使った強力な一括置換・抽出から、Base64やURLエンコード/デコード、ハッシュ生成まで、開発者が日常的に必要とする複雑な文字列操作を瞬時に行えます。
+    </p>
 
-    <!-- 文字数カウントフォーム -->
-    <form th:action="@{/string-tools/process}" method="post" class="mb-4">
-        <input type="hidden" name="operation" value="count">
-        <div class="mb-3">
-            <label class="form-label fw-bold">文字列</label>
-            <textarea class="form-control" name="inputText" rows="3" th:text="${inputText}"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">文字数をカウント</button>
-    </form>
+    <div class="tool-form">
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
 
-    <div class="mt-4" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
+        <form th:action="@{/string-tools/process}" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="inputText" class="form-label">入力テキスト</label>
+                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="result" class="form-label">処理結果</label>
+                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="operation" class="form-label">操作選択</label>
+                            <select class="form-select" id="operation" name="operation" th:value="${operation}">
+                                <option value="regex_replace">正規表現置換</option>
+                                <option value="regex_extract">正規表現抽出</option>
+                                <option value="base64_encode">Base64エンコード</option>
+                                <option value="base64_decode">Base64デコード</option>
+                                <option value="url_encode">URLエンコード</option>
+                                <option value="url_decode">URLデコード</option>
+                                <option value="md5_hash">MD5ハッシュ</option>
+                                <option value="sha256_hash">SHA-256ハッシュ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="regex" class="form-label">正規表現パターン (Regex/置換時のみ)</label>
+                            <input type="text" class="form-control" id="regex" name="regex" th:value="${regex}" placeholder="例: [a-zA-Z]+">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="replacement" class="form-label">置換文字列 (置換時のみ)</label>
+                            <input type="text" class="form-control" id="replacement" name="replacement" th:value="${replacement}" placeholder="例: REPLACED">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-info btn-lg">実行</button>
+                </div>
+            </div>
+        </form>
     </div>
+    
+    <hr class="my-5">
 
-    <div class="mt-4" th:if="${result != null}">
-        <label class="form-label fw-bold">結果</label>
-        <textarea class="form-control" rows="3" readonly th:text="${result}"></textarea>
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">正規表現による文字列処理の効率化</h2>
+            <p>
+                正規表現は、特定のパターンを持つ文字列を検索、置換、または抽出するための強力なツールです。当ツールを使用することで、大量のログファイルや設定ファイルの中から必要なデータだけを正確に取得し、作業効率を大幅に向上させることができます。
+            </p>
+            
+            <h3>様々なエンコーディングに対応</h3>
+            <p>
+                当ツールの文字列操作には、Web通信で使われる<strong>URLエンコード・デコード</strong>や、バイナリデータをテキスト形式に変換する<strong>Base64エンコード・デコード</strong>機能が含まれます。APIキーの検証や、特殊文字を含むURLのデバッグ時に便利です。
+            </p>
+            
+            <h3>パスワードの安全性とハッシュ生成</h3>
+            <p>
+                パスワードや機密データの安全性を確認するため、MD5、SHA-256などのハッシュ関数を使った文字列のハッシュ生成にも対応しています。
+            </p>
+        </div>
     </div>
 
 </div>

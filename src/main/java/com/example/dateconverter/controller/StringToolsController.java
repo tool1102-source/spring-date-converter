@@ -14,7 +14,15 @@ public class StringToolsController {
 
     @GetMapping("/string-tools")
     public String showPage(Model model) {
-        model.addAttribute("pageTitle", "文字列操作ツール");
+        // 🚨 SEO修正: pageTitleを最適化
+        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・置換・抽出）");
+        
+        // 🚨 新規追加: metaDescriptionを追加
+        model.addAttribute("metaDescription", "正規表現による文字列の置換、抽出、特定の形式への整形など、煩雑な文字列処理を一括で行うための無料オンラインツール。");
+        
+        // 🚨 独自ドメイン設定: Canonical URLを設定
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/string-tools");
+        
         model.addAttribute("content", "string-tools");
         return "layout";
     }
@@ -36,7 +44,11 @@ public class StringToolsController {
             error = "処理に失敗しました: " + e.getMessage();
         }
 
-        model.addAttribute("pageTitle", "文字列操作ツール");
+        // 🚨 POST処理後もメタデータを再設定
+        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・置換・抽出）");
+        model.addAttribute("metaDescription", "正規表現による文字列の置換、抽出、特定の形式への整形など、煩雑な文字列処理を一括で行うための無料オンラインツール。");
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/string-tools");
+        
         model.addAttribute("content", "string-tools");
         model.addAttribute("inputText", inputText);
         model.addAttribute("operation", operation);

@@ -1,47 +1,62 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">文字列変換ツール</h2>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-secondary">🔠 テキスト・エンコード/デコード & 形式変換ツール</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        大文字・小文字、全角・半角、HTMLエスケープなど、<strong>文字列の表記形式</strong>を一括で変換します。様々な環境で発生する文字化けや表示の問題を解決します。
+    </p>
 
-    <form th:action="@{/text-tools/convert}" method="post">
-        <div class="mb-3">
-            <label class="form-label fw-bold">入力文字列</label>
-            <textarea class="form-control" name="inputText" rows="5"
-                      placeholder="変換したい文字列を入力"
-                      th:text="${inputText}"></textarea>
+    <div class="tool-form">
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
+
+        <form th:action="@{/text-tools/convert}" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="inputText" class="form-label">入力テキスト</label>
+                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="result" class="form-label">変換結果</label>
+                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
+                </div>
+            </div>
+            
+            <div class="row mb-5">
+                <div class="col-md-4 offset-md-4">
+                    <label for="operation" class="form-label">変換操作を選択</label>
+                    <select class="form-select mb-3" id="operation" name="operation" th:value="${operation}">
+                        <option value="to_upper">全て大文字に</option>
+                        <option value="to_lower">全て小文字に</option>
+                        <option value="half_to_full_katakana">半角カナ → 全角カナ</option>
+                        <option value="full_to_half_katakana">全角カナ → 半角カナ</option>
+                        <option value="html_escape">HTMLエスケープ</option>
+                        <option value="html_unescape">HTMLアンエスケープ</option>
+                    </select>
+                    <button type="submit" class="btn btn-secondary btn-lg w-100">変換実行</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">日本語特有の文字形式（全角・半角）への対応</h2>
+            <p>
+                データベースの検索や入力値の検証において、<strong>全角カタカナ</strong>と<strong>半角カタカナ</strong>の違いはしばしば問題となります。当ツールは、これらの表記揺れを吸収し、データの一貫性を保つための変換機能を提供します。
+            </p>
+            
+            <h3>ケース（大文字・小文字）の高速変換</h3>
+            <p>
+                SQLキーワードやプログラムの定数、JSONキーなど、テキストを全て大文字（UPPER CASE）または全て小文字（lower case）に瞬時に変換できます。コード規約の統一や、データの正規化に役立ちます。
+            </p>
+            
+            <h3>HTMLエンティティとエスケープ処理</h3>
+            <p>
+                Web開発において、HTML特殊文字（&lt;, &gt;, &amp;など）を安全に表示するため、または逆にエスケープされたテキストを復元するために、HTMLエンティティのエンコード/デコード機能が役立ちます。
+            </p>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label fw-bold">変換方法</label><br>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="operation" value="uppercase"
-                       th:checked="${operation} == null or ${operation} == 'uppercase'">
-                <label class="form-check-label">大文字</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="operation" value="lowercase"
-                       th:checked="${operation} == 'lowercase'">
-                <label class="form-check-label">小文字</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="operation" value="url-encode"
-                       th:checked="${operation} == 'url-encode'">
-                <label class="form-check-label">URLエンコード</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="operation" value="url-decode"
-                       th:checked="${operation} == 'url-decode'">
-                <label class="form-check-label">URLデコード</label>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">変換する</button>
-    </form>
-
-    <div class="mt-4" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
     </div>
 
-    <div class="mt-4" th:if="${result != null}">
-        <label class="form-label fw-bold">結果</label>
-        <textarea class="form-control" rows="5" readonly th:text="${result}"></textarea>
-    </div>
 </div>

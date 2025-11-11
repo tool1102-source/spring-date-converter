@@ -1,42 +1,74 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">📄 PDFツール</h2>
-    <p class="text-muted">テキストをPDF化、またはPDFからテキストを抽出します。</p>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-warning">📄 PDF ↔ テキスト 変換ツール（作成・抽出）</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        <strong>テキストファイル</strong>からプロフェッショナルな <strong>PDFドキュメント</strong> を生成します。また、既存のPDFドキュメントから<strong>テキストデータのみを抽出</strong>し、再利用可能な形式に変換します。
+    </p>
 
-    <form th:action="@{/text-to-pdf}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-filetype-txt"></i> テキスト → PDF 変換</h5>
-        <div class="mb-3">
-            <label class="form-label fw-bold">テキストファイル (.txt)</label>
-            <input type="file" name="textFile" accept=".txt" class="form-control" required>
+    <div class="tool-form row">
+        <div th:if="${error}" class="col-12 mb-4">
+            <div class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
         </div>
-        <button type="submit" class="btn btn-primary w-100">
-            <i class="bi bi-file-earmark-pdf"></i> PDFに変換
-        </button>
-        <div class="mt-3" th:if="${pdfSuccess}">
-             <div class="alert alert-success">PDFへの変換が完了し、ダウンロードが開始されました。</div>
+        <div th:if="${message}" class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">抽出されたテキスト</div>
+                <div class="card-body">
+                    <textarea class="form-control" rows="10" readonly th:text="${message}"></textarea>
+                </div>
+            </div>
         </div>
-    </form>
-
-    <form th:action="@{/pdf-to-text}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-success"><i class="bi bi-filetype-pdf"></i> PDF → テキスト 変換</h5>
-        <div class="mb-3">
-            <label class="form-label fw-bold">PDFファイル (.pdf)</label>
-            <input type="file" name="pdfFile" accept=".pdf" class="form-control" required>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-white">テキスト → PDF 変換</div>
+                <div class="card-body">
+                    <form th:action="@{/pdf-tools/text-to-pdf}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="textFile" class="form-label">テキストファイル (.txtなど) を選択</label>
+                            <input class="form-control" type="file" id="textFile" name="textFile" accept=".txt">
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 text-white">変換してダウンロード</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success w-100">
-            <i class="bi bi-filetype-txt"></i> テキストに変換
-        </button>
-    </form>
 
-    <div class="mt-3" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
-    </div>
-
-    <div class="mt-4" th:if="${message != null}">
-            <label class="form-label fw-bold">変換結果</label>
-            <div class="input-group">
-                <textarea class="form-control" rows="6" readonly th:text="${message}"></textarea>
-                <button class="btn btn-secondary copy-button" data-target-id="pdfResultTextarea"><i class="bi bi-files"></i> コピー</button>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">PDF → テキスト 抽出</div>
+                <div class="card-body">
+                    <form th:action="@{/pdf-tools/pdf-to-text}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="pdfFile" class="form-label">PDFファイルを選択</label>
+                            <input class="form-control" type="file" id="pdfFile" name="pdfFile" accept=".pdf">
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">テキスト抽出</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">PDFの作成とデータ抽出の重要性</h2>
+            <p>
+                PDF (Portable Document Format) は、環境に依存せずにドキュメントのレイアウトを保持できるため、報告書や請求書などのドキュメント生成に不可欠です。また、多くの情報がPDF形式で共有されるため、その中から必要なテキスト情報を抽出するニーズも高まっています。
+            </p>
+            
+            <h3>PDFからのテキスト抽出精度</h3>
+            <p>
+                当ツールは、PDFファイルの構造を解析し、単なる画像データではなくテキストとして埋め込まれている情報を正確に抽出します。これにより、PDFドキュメントからのデータマイニングやコンテンツの再利用を容易にします。
+            </p>
+            
+            <h3>開発時のドキュメント生成</h3>
+            <p>
+                ログデータやコード、Markdownファイルなどのプレーンテキストを瞬時にPDF形式に変換することで、開発フェーズにおけるドキュメント作成や共有を効率化できます。
+            </p>
+        </div>
+    </div>
+
 </div>

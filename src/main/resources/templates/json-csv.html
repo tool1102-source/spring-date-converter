@@ -1,37 +1,54 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">JSON ⇄ CSV 変換ツール</h2>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-success">📊 JSON ⇄ CSV/TSV 相互変換ツール</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        構造化された <strong>JSON</strong> データと、表形式の <strong>CSV/TSV</strong> データを双方向に変換します。APIのレスポンスをスプレッドシートで開きたい場合や、CSVデータからJSON構造を生成したい場合に役立ちます。
+    </p>
 
-    <form th:action="@{/json-csv/convert}" method="post">
-        <div class="mb-3">
-            <label class="form-label fw-bold">変換方向</label><br>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="mode" value="jsonToCsv"
-                       th:checked="${mode} == null or ${mode} == 'jsonToCsv'">
-                <label class="form-check-label">JSON → CSV</label>
+    <div class="tool-form">
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
+        
+        <form th:action="@{/json-csv/convert}" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="inputText" class="form-label">入力データ (JSONまたはCSV)</label>
+                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="result" class="form-label">変換結果</label>
+                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="mode" value="csvToJson"
-                       th:checked="${mode} == 'csvToJson'">
-                <label class="form-check-label">CSV → JSON</label>
+            
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <button type="submit" name="mode" value="jsonToCsv" class="btn btn-success btn-lg mx-2">JSON → CSV 変換</button>
+                    <button type="submit" name="mode" value="csvToJson" class="btn btn-primary btn-lg mx-2">CSV → JSON 変換</button>
+                </div>
             </div>
+        </form>
+    </div>
+    
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">JSONとCSVの役割とデータ連携</h2>
+            <p>
+                JSON (JavaScript Object Notation) は、Web APIで標準的に利用される軽量なデータ交換形式です。一方、CSV (Comma Separated Values) は、表計算ソフトやデータベースへのインポート/エクスポートに最も広く使用されています。
+            </p>
+            
+            <h3>変換時のヘッダー処理とネスト対応</h3>
+            <p>
+                JSONからCSVへ変換する際、オブジェクトのキーが自動的にCSVのヘッダー行として抽出されます。また、<strong>ネストされたJSON構造</strong>を持つデータに対しても、可能な限りフラットなCSV形式に変換できるよう内部処理を最適化しています。
+            </p>
+            
+            <h3>TSV (Tab Separated Values) への対応</h3>
+            <p>
+                当ツールでは、オプションでカンマ区切り（CSV）だけでなく、タブ区切り（TSV）のデータ形式にも対応可能です。これにより、より複雑なデータや特殊なシステムとのデータ連携もスムーズに行えます。
+            </p>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label fw-bold">入力</label>
-            <textarea class="form-control" name="inputText" rows="10"
-                      placeholder="ここにJSONまたはCSVを入力してください"
-                      th:text="${inputText}"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">変換する</button>
-    </form>
-
-    <div class="mt-4" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
     </div>
 
-    <div class="mt-4" th:if="${result != null}">
-        <label class="form-label fw-bold">結果</label>
-        <textarea class="form-control" rows="10" readonly th:text="${result}"></textarea>
-    </div>
 </div>

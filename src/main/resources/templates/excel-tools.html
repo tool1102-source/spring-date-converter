@@ -1,39 +1,66 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">📊 Excel ⇄ CSV ツール</h2>
-    <p class="text-muted">Excel（.xlsx）とCSV（.csv）の相互変換ができます。</p>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-danger">📊 Excel (XLSX) ⇄ CSV 相互変換ツール</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        <strong>Excelファイル (.xlsx)</strong> と <strong>CSVファイル</strong> を相互に変換します。大量データの分析準備や、システムへのデータインポート時に利用できる強力なファイル処理ツールです。
+    </p>
 
-    <form th:action="@{/excel-tools/csv-to-excel}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-filetype-csv"></i> CSV → Excel</h5>
-        <div class="mb-3">
-            <label class="form-label fw-bold">CSVファイル (.csv)</label>
-            <input type="file" name="csvFile" accept=".csv" class="form-control" required>
+    <div class="tool-form row">
+        <div th:if="${error}" class="col-12 mb-4">
+            <div class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
         </div>
-        <button type="submit" class="btn btn-primary w-100">
-            <i class="bi bi-file-earmark-spreadsheet"></i> Excelに変換
-        </button>
-    </form>
-
-    <form th:action="@{/excel-tools/excel-to-csv}" method="post" enctype="multipart/form-data" class="mb-4 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-success"><i class="bi bi-filetype-xlsx"></i> Excel → CSV</h5>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Excelファイル (.xlsx)</label>
-            <input type="file" name="excelFile" accept=".xlsx,.xls" class="form-control" required>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">CSV → Excel (.xlsx) 変換</div>
+                <div class="card-body">
+                    <form th:action="@{/excel-tools/csv-to-excel}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="csvFile" class="form-label">CSVファイルを選択</label>
+                            <input class="form-control" type="file" id="csvFile" name="csvFile" accept=".csv">
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">変換してダウンロード</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success w-100">
-            <i class="bi bi-filetype-csv"></i> CSVに変換
-        </button>
-    </form>
 
-    <div class="mt-3" th:if="${error != null}">
-        <div class="alert alert-danger" th:text="${error}"></div>
-    </div>
-
-    <div class="mt-4" th:if="${message != null}">
-            <label class="form-label fw-bold">変換結果</label>
-            <div class="input-group">
-                <textarea class="form-control" rows="6" readonly th:text="${message}"></textarea>
-                <button class="btn btn-secondary copy-button" data-target-id="excelResultTextarea"><i class="bi bi-files"></i> コピー</button>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">Excel (.xlsx) → CSV 変換</div>
+                <div class="card-body">
+                    <form th:action="@{/excel-tools/excel-to-csv}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="excelFile" class="form-label">Excelファイルを選択</label>
+                            <input class="form-control" type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">変換してダウンロード</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">ExcelとCSVの変換が開発現場で重要な理由</h2>
+            <p>
+                Excelは複雑な計算や図表作成に優れますが、プログラムやスクリプトでのデータ処理にはテキストベースのCSVの方が適しています。開発現場では、ユーザーから受け取ったExcelデータをCSVに変換してシステムに取り込んだり、その逆の操作が頻繁に発生します。
+            </p>
+            
+            <h3>正確なデータ型処理</h3>
+            <p>
+                ExcelからCSVへの変換時、日付形式や数値形式が崩れることがしばしば発生します。当ツールは、Apache POIライブラリを使用し、Excel内の<strong>日付や数値の書式を可能な限り維持</strong>したまま、正確なテキストデータとしてCSVに書き出すよう設計されています。
+            </p>
+            
+            <h3>大容量ファイルへの対応</h3>
+            <p>
+                大規模なデータセットを扱う場合でも、効率的なメモリ処理により、安定した変換速度を実現します。ファイルサイズに関するエラーが発生した場合は、迅速なフィードバックを画面に表示します。
+            </p>
+        </div>
+    </div>
+
 </div>

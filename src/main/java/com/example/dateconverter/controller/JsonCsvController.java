@@ -14,7 +14,15 @@ public class JsonCsvController {
 
     @GetMapping("/json-csv")
     public String showPage(Model model) {
-        model.addAttribute("pageTitle", "JSON ⇄ CSV 変換ツール");
+        // 🚨 SEO修正: pageTitleにTSVも追加してキーワードを強化
+        model.addAttribute("pageTitle", "JSON ⇄ CSV/TSV 相互変換ツール"); 
+        
+        // 🚨 新規追加: metaDescriptionを追加
+        model.addAttribute("metaDescription", "JSON形式のデータをCSV形式、またはその逆の形式に変換する無料オンラインツール。データの整形や確認、開発時のデータ処理に最適です。");
+        
+        // 🚨 独自ドメイン設定: Canonical URLを設定
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/json-csv");
+        
         model.addAttribute("content", "json-csv");
         return "layout";
     }
@@ -38,12 +46,16 @@ public class JsonCsvController {
             error = "変換中にエラーが発生しました: " + e.getMessage();
         }
 
-        model.addAttribute("pageTitle", "JSON ⇄ CSV 変換ツール");
+        // 🚨 POST処理後もメタデータを再設定
+        model.addAttribute("pageTitle", "JSON ⇄ CSV/TSV 相互変換ツール");
+        model.addAttribute("metaDescription", "JSON形式のデータをCSV形式、またはその逆の形式に変換する無料オンラインツール。データの整形や確認、開発時のデータ処理に最適です。");
+        model.addAttribute("canonicalUrl", "https://convertertools.jp/json-csv");
+        
         model.addAttribute("content", "json-csv");
         model.addAttribute("inputText", inputText);
         model.addAttribute("result", result);
-        model.addAttribute("mode", mode);
         model.addAttribute("error", error);
+        model.addAttribute("mode", mode);
 
         return "layout";
     }

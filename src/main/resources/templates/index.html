@@ -1,70 +1,92 @@
-<div class="container">
-    <h1 class="mb-4">🧰 ツール集サイト</h1>
-    <p>よく使う便利なWebツールをまとめています。</p>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3">
+        開発者向け オンライン変換ツール & データ操作スイート
+    </h1>
+    <p class="lead text-center text-muted mb-5">
+        煩雑なデータ処理をワンクリックで。<strong>JSON, CSV, Epoch Time, PDF</strong> など、エンジニアの日常業務を効率化する無料ツール集です。
+    </p>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
+    <hr>
 
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
         <div class="col">
-            <div class="card h-100 shadow-sm border-primary">
+            <div class="card h-100 shadow-lg border-primary">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-file-earmark-code"></i> JSON ⇄ CSV</h5>
-                    <p class="card-text">JSONとCSVを相互に変換できます。</p>
-                    <a href="/json-csv" class="btn btn-primary w-100">使う</a>
+                    <h2 class="card-title h4 text-primary">📅 日付・時刻 & Epoch 変換</h2>
+                    <p class="card-text text-muted">
+                        <strong>Epoch Time</strong> や <strong>タイムスタンプ</strong> を標準日付に相互変換。フォーマット調整も自由自在。
+                    </p>
+                    <a th:href="@{/date-tools}" class="btn btn-primary stretched-link">利用開始</a>
                 </div>
             </div>
         </div>
 
         <div class="col">
-            <div class="card h-100 shadow-sm border-success">
+            <div class="card h-100 shadow-lg border-success">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-calendar-event"></i> 日付/時刻ツール</h5>
-                    <p class="card-text">日付の形式変換、Epoch Timeとの相互変換、日付操作ができます。</p>
-                    <a href="/date-tools" class="btn btn-primary w-100">使う</a>
+                    <h2 class="card-title h4 text-success">📊 JSON ⇄ CSV/TSV 相互変換</h2>
+                    <p class="card-text text-muted">
+                        <strong>JSON</strong> データと <strong>CSV</strong> 形式を双方向変換。APIやログデータの整形に最適。
+                    </p>
+                    <a th:href="@{/json-csv}" class="btn btn-success stretched-link">利用開始</a>
                 </div>
             </div>
         </div>
 
         <div class="col">
-            <div class="card h-100 shadow-sm border-warning">
+            <div class="card h-100 shadow-lg border-info">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-type"></i> 文字列変換</h5>
-                    <p class="card-text">大文字・小文字変換やURLエンコード/デコードができます。</p>
-                    <a href="/text-tools" class="btn btn-primary w-100">使う</a>
+                    <h2 class="card-title h4 text-info">⚙️ 文字列操作 & エンコード</h2>
+                    <p class="card-text text-muted">
+                        <strong>正規表現</strong>置換、Base64/URLエンコード、大文字・小文字変換などの文字列処理。
+                    </p>
+                    <a th:href="@{/string-tools}" class="btn btn-info stretched-link">利用開始</a>
                 </div>
             </div>
         </div>
 
         <div class="col">
-            <div class="card h-100 shadow-sm border-danger">
+            <div class="card h-100 shadow-lg border-danger">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-type"></i> 文字列操作ツール</h5>
-                    <p class="card-text">正規表現置換・文字数カウントができます。</p>
-                    <a href="/string-tools" class="btn btn-primary w-100">使う</a>
+                    <h2 class="card-title h4 text-danger">📄 PDF と Excel のファイル処理</h2>
+                    <p class="card-text text-muted">
+                        <strong>PDF ↔ テキスト</strong>、**CSV ↔ Excel** の相互変換機能。ドキュメントやデータファイルの形式を安全に変換します。
+                    </p>
+                    <div class="d-flex justify-content-start gap-2">
+                        <a th:href="@{/pdf-tools}" class="btn btn-sm btn-outline-danger">PDFツールへ</a> 
+                        <a th:href="@{/excel-tools}" class="btn btn-sm btn-danger">Excelツールへ</a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col">
-            <div class="card h-100 shadow-sm border-secondary">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-file-earmark-spreadsheet"></i> Excel ⇄ CSV</h5>
-                    <p class="card-text">Excel (.xlsx) と CSV (.csv) の相互変換ツール。</p>
-                    <a href="/excel-tools" class="btn btn-primary w-100">使う</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card h-100 shadow-sm border-dark">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-file-earmark-pdf"></i> PDFツール</h5>
-                    <p class="card-text">PDFからテキスト抽出、またはテキストからPDF生成が可能です。</p>
-                    <a href="/pdf-tools" class="btn btn-primary w-100">使う</a>
-                </div>
-            </div>
-        </div>
-
     </div>
-</div>
+    
+    <hr class="my-5">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">なぜ convertertools.jp が開発者に選ばれるのか？</h2>
+            <p>
+                開発プロジェクトにおけるデータ変換作業は、しばしば時間と労力を要します。当サイトは、以下のような課題を解決するために設計されました。
+            </p>
+            
+            <h3>データ形式の壁をなくす</h3>
+            <p>
+                API連携、データベース操作、ログ解析など、開発現場ではJSON、CSV、TSV、XML、プレーンテキスト、Excelなど、多様なデータ形式を扱う必要があります。特に <strong>JSONとCSVの相互変換</strong> は頻繁に発生しますが、手動での整形はエラーの原因となります。当サイトのツールを使えば、データの整合性を保ちながら瞬時に変換が可能です。
+            </p>
+
+            <h3>タイムスタンプ処理の煩雑さを解消</h3>
+            <p>
+                システムログやデータベースに記録される <strong>Epoch Time</strong> は、人間が読める形式ではありません。当サイトの <strong>Epoch Time 変換ツール</strong> は、任意のタイムゾーン（日本標準時 JST に対応）での相互変換をサポートし、デバッグやトラブルシューティングにかかる時間を大幅に削減します。
+            </p>
+
+            <h3>セキュリティとプライバシーへの配慮</h3>
+            <p>
+                当サイトで提供されるツールの多くは、<strong>サーバー側でデータが保持されることなく</strong>、処理が完了次第すぐにデータが破棄される設計になっています（※ファイルアップロードを伴う機能は除き、可能な限りクライアントサイドで処理）。これにより、機密性の高いデータを扱う開発者でも安心してご利用いただけます。
+            </p>
+        </div>
+    </div>
+
+</div>

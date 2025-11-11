@@ -1,74 +1,96 @@
-<div class="card shadow-sm p-4">
-    <h2 class="mb-3">📅 日付/時刻ツール</h2>
-    <p class="text-muted">様々な形式の日付文字列を指定したフォーマットに変換、およびEpoch Timeとの相互変換を行います。</p>
+<div class="container my-5">
+    
+    <h1 class="text-center mb-3 text-primary">📅 日付・Epoch Time 相互変換ツール</h1>
+    
+    <p class="lead text-center text-muted mb-5">
+        標準日付（例: <code>yyyy/MM/dd HH:mm:ss</code>）と <strong>Epochミリ秒</strong> を双方向に変換します。開発におけるログ解析やタイムスタンプのデバッグに最適です。
+    </p>
 
-    <form th:action="@{/date-tools/convert-date}" method="post" class="mb-5 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-calendar-check"></i> 日付フォーマット変換</h5>
-        <div class="mb-3">
-            <label class="form-label fw-bold">入力日付文字列</label>
-            <input type="text" name="inputDate" class="form-control" placeholder="例: 2024-01-01T10:30:00" th:value="${inputDate}" required>
+    <div class="tool-form row">
+        <div class="col-12 mb-4">
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
+            <div th:if="${resultMessage}" class="alert alert-success" role="alert">
+                変換結果: <strong th:text="${resultMessage}"></strong>
+            </div>
+            <div th:if="${epochResultMessage}" class="alert alert-success" role="alert">
+                変換結果: <strong th:text="${epochResultMessage}"></strong>
+            </div>
+            <div th:if="${epochConvertResult}" class="alert alert-success" role="alert">
+                Epochミリ秒: <strong th:text="${epochConvertResult}"></strong>
+            </div>
         </div>
-        <div class="row mb-3">
-            <div class="col">
-                <label class="form-label fw-bold">入力フォーマット</label>
-                <input type="text" name="inputFormat" class="form-control" placeholder="例: yyyy-MM-dd'T'HH:mm:ss" th:value="${inputFormat}" required>
-            </div>
-            <div class="col">
-                <label class="form-label fw-bold">出力フォーマット</label>
-                <input type="text" name="outputFormat" class="form-control" placeholder="例: yyyy/MM/dd HH:mm:ss" th:value="${outputFormat}" required>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">日付フォーマット相互変換</div>
+                <div class="card-body">
+                    <form th:action="@{/date-tools/convert-date}" method="post">
+                        <div class="mb-3">
+                            <label for="inputDate" class="form-label">入力日付</label>
+                            <input type="text" class="form-control" id="inputDate" name="inputDate" th:value="${inputDate}" placeholder="例: 2024/05/20 10:30:00">
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputFormat" class="form-label">入力フォーマット</label>
+                            <input type="text" class="form-control" id="inputFormat" name="inputFormat" th:value="${inputFormat}" placeholder="例: yyyy/MM/dd HH:mm:ss">
+                        </div>
+                        <div class="mb-3">
+                            <label for="outputFormat" class="form-label">出力フォーマット</label>
+                            <input type="text" class="form-control" id="outputFormat" name="outputFormat" th:value="${outputFormat}" placeholder="例: MM-dd-yyyy hh:mm:ss a">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">変換実行</button>
+                    </form>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100">
-            <i class="bi bi-arrow-right-square"></i> 指定フォーマットに変換
-        </button>
-    </form>
 
-    <div class="mb-5 border rounded p-3 bg-light">
-        <h5 class="fw-bold mb-3 text-success"><i class="bi bi-clock"></i> Epoch Time (Unix Time) 変換</h5>
-        
-        <form th:action="@{/date-tools/epoch-to-date}" method="post" class="mb-4">
-            <label class="form-label fw-bold">Epochミリ秒 → 日付 (標準形式)</label>
-            <div class="input-group">
-                <input type="text" name="epochMilli" class="form-control" placeholder="例: 1704067200000" required>
-                <button type="submit" class="btn btn-success">変換</button>
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">Epochミリ秒 → 日付変換</div>
+                <div class="card-body">
+                    <form th:action="@{/date-tools/epoch-to-date}" method="post">
+                        <div class="mb-3">
+                            <label for="epochMilli" class="form-label">Epochミリ秒</label>
+                            <input type="text" class="form-control" id="epochMilli" name="epochMilli" placeholder="例: 1716172200000">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">変換実行</button>
+                    </form>
+                </div>
             </div>
-        </form>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">日付 → Epochミリ秒変換</div>
+                <div class="card-body">
+                    <form th:action="@{/date-tools/date-to-epoch}" method="post">
+                        <div class="mb-3">
+                            <label for="standardDate" class="form-label">標準日付 (YYYY/MM/DD HH:MM:SS)</label>
+                            <input type="text" class="form-control" id="standardDate" name="standardDate" placeholder="例: 2024/05/20 10:30:00">
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">変換実行</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="my-5">
 
-        <form th:action="@{/date-tools/date-to-epoch}" method="post">
-            <label class="form-label fw-bold">日付 (標準形式) → Epochミリ秒</label>
-            <div class="input-group">
-                <input type="text" name="standardDate" class="form-control" placeholder="標準形式: 2024/01/01 09:00:00" required>
-                <button type="submit" class="btn btn-success">変換</button>
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-3">Epoch Time (UNIX時間) の変換と役割</h2>
+            <p>
+                Epoch Time（エポックタイム）は、1970年1月1日 00:00:00 UTC（協定世界時）からの経過時間を秒またはミリ秒で示した数値です。多くのシステムやデータベースで、タイムスタンプを扱う際の標準として利用されています。
+            </p>
+            
+            <h3>日付フォーマット変換の必要性</h3>
+            <p>
+                異なるシステム間でデータをやり取りする際、日付の表示形式（フォーマット）が異なり、エラーの原因となることが頻繁にあります。このツールでは、任意の入力フォーマットから、ユーザーが指定したカスタム出力フォーマットへの変換を瞬時に行い、データ連携の課題を解決します。
+            </p>
+            
+            <h3>タイムゾーン（JST）への対応</h3>
+            <p>
+                当ツールは、変換後の日付表示において<strong>日本標準時（JST）</strong>をデフォルトとして採用しています。これにより、サーバーログや海外システムから取得したUTCベースのEpoch Timeを、日本の時刻で正確に確認することができます。
+            </p>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <div th:if="${error != null}">
-            <div class="alert alert-danger" th:text="${error}"></div>
-        </div>
-        
-        <label class="form-label fw-bold">変換結果</label>
-        
-        <div th:if="${resultMessage != null}">
-            <div class="input-group mb-3">
-                <textarea class="form-control" rows="1" readonly th:text="${resultMessage}"></textarea>
-                <button class="btn btn-secondary copy-button"><i class="bi bi-files"></i> コピー</button>
-            </div>
-        </div>
-
-        <div th:if="${epochResultMessage != null}">
-             <div class="input-group mb-3">
-                <textarea class="form-control" rows="1" readonly th:text="${epochResultMessage}"></textarea>
-                <button class="btn btn-secondary copy-button"><i class="bi bi-files"></i> コピー</button>
-            </div>
-        </div>
-        
-        <div th:if="${epochConvertResult != null}">
-            <div class="input-group mb-3">
-                <textarea class="form-control" rows="1" readonly th:text="${epochConvertResult}"></textarea>
-                <button class="btn btn-secondary copy-button"><i class="bi bi-files"></i> コピー</button>
-            </div>
-        </div>
-    </div>
 </div>
