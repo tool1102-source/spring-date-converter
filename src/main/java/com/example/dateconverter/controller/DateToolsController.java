@@ -23,15 +23,10 @@ public class DateToolsController {
     // 画面表示 (GET /date-tools)
     @GetMapping
     public String showDateTools(Model model) {
-        // 🚨 SEO修正: pageTitleを最適化
+        // 🚨 修正: pageTitleとmetaDescriptionを統一
         model.addAttribute("pageTitle", "日付/時刻・Epoch Time 相互変換ツール");
-        
-        // 🚨 新規追加: metaDescriptionを追加
         model.addAttribute("metaDescription", "日付フォーマット（yyyy/MM/dd HH:mm:ss）の相互変換、Epochミリ秒と標準日付の双方向変換を瞬時に行える無料オンラインツール。開発者・データ分析に最適です。");
-        
-        // 🚨 独自ドメイン設定: Canonical URLを追加
         model.addAttribute("canonicalUrl", "https://convertertools.jp/date-tools"); 
-
         model.addAttribute("content", "date-tools");
         return "layout";
     }
@@ -45,7 +40,7 @@ public class DateToolsController {
             Model model
     ) {
         String result = dateToolsService.convertToCustomFormat(inputDate, inputFormat, outputFormat);
-
+        
         model.addAttribute("inputDate", inputDate);
         model.addAttribute("inputFormat", inputFormat);
         model.addAttribute("outputFormat", outputFormat);
@@ -56,7 +51,7 @@ public class DateToolsController {
             model.addAttribute("resultMessage", result);
         }
         
-        // 🚨 POST処理後もメタデータを再設定
+        // 🚨 POST処理後もメタデータを再設定 (変更なし)
         model.addAttribute("pageTitle", "日付/時刻・Epoch Time 相互変換ツール");
         model.addAttribute("metaDescription", "日付フォーマット（yyyy/MM/dd HH:mm:ss）の相互変換、Epochミリ秒と標準日付の双方向変換を瞬時に行える無料オンラインツール。開発者・データ分析に最適です。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/date-tools"); 
@@ -76,7 +71,7 @@ public class DateToolsController {
         String result = dateToolsService.epochToStandardDate(epochMilli);
         model.addAttribute("epochResultMessage", result); 
         
-        // 🚨 POST処理後もメタデータを再設定
+        // 🚨 POST処理後もメタデータを再設定 (変更なし)
         model.addAttribute("pageTitle", "日付/時刻・Epoch Time 相互変換ツール");
         model.addAttribute("metaDescription", "日付フォーマット（yyyy/MM/dd HH:mm:ss）の相互変換、Epochミリ秒と標準日付の双方向変換を瞬時に行える無料オンラインツール。開発者・データ分析に最適です。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/date-tools"); 
@@ -94,9 +89,9 @@ public class DateToolsController {
             Model model
     ) {
         String result = dateToolsService.standardDateToEpoch(standardDate);
-        model.addAttribute("epochResultMessage", result); // 結果メッセージは同じフィールドを使用
+        model.addAttribute("epochConvertResult", result); 
         
-        // 🚨 POST処理後もメタデータを再設定
+        // 🚨 POST処理後もメタデータを再設定 (変更なし)
         model.addAttribute("pageTitle", "日付/時刻・Epoch Time 相互変換ツール");
         model.addAttribute("metaDescription", "日付フォーマット（yyyy/MM/dd HH:mm:ss）の相互変換、Epochミリ秒と標準日付の双方向変換を瞬時に行える無料オンラインツール。開発者・データ分析に最適です。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/date-tools"); 

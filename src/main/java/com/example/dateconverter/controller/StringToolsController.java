@@ -14,15 +14,10 @@ public class StringToolsController {
 
     @GetMapping("/string-tools")
     public String showPage(Model model) {
-        // 🚨 SEO修正: pageTitleを最適化
-        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・置換・抽出）");
-        
-        // 🚨 新規追加: metaDescriptionを追加
-        model.addAttribute("metaDescription", "正規表現による文字列の置換、抽出、特定の形式への整形など、煩雑な文字列処理を一括で行うための無料オンラインツール。");
-        
-        // 🚨 独自ドメイン設定: Canonical URLを設定
+        // 🚨 修正: ページタイトルとメタディスクリプションを最適化
+        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・エンコード/デコード）");
+        model.addAttribute("metaDescription", "正規表現による検索/置換、Base64、URLエンコード/デコード、ハッシュ生成など、開発者が必要とする高度な文字列操作をオンラインで提供します。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/string-tools");
-        
         model.addAttribute("content", "string-tools");
         return "layout";
     }
@@ -44,11 +39,11 @@ public class StringToolsController {
             error = "処理に失敗しました: " + e.getMessage();
         }
 
-        // 🚨 POST処理後もメタデータを再設定
-        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・置換・抽出）");
-        model.addAttribute("metaDescription", "正規表現による文字列の置換、抽出、特定の形式への整形など、煩雑な文字列処理を一括で行うための無料オンラインツール。");
+        // 🚨 POST処理後もメタデータを再設定 (変更なし)
+        model.addAttribute("pageTitle", "文字列操作・整形ツール（正規表現・エンコード/デコード）");
+        model.addAttribute("metaDescription", "正規表現による検索/置換、Base64、URLエンコード/デコード、ハッシュ生成など、開発者が必要とする高度な文字列操作をオンラインで提供します。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/string-tools");
-        
+
         model.addAttribute("content", "string-tools");
         model.addAttribute("inputText", inputText);
         model.addAttribute("operation", operation);

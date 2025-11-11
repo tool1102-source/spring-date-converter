@@ -17,32 +17,25 @@ public class ExcelToolController {
 
     private final ExcelToolService excelToolService;
 
+    // 🚨 修正: @Autowired を明示的に追加
     @Autowired 
     public ExcelToolController(ExcelToolService excelToolService) {
         this.excelToolService = excelToolService;
     }
 
-    /**
-     * 画面表示 (GET /excel-tools)
-     */
     @GetMapping
     public String showExcelTools(Model model) {
-        // 🚨 SEO修正: pageTitleを設定
-        model.addAttribute("pageTitle", "Excel ⇄ CSV 相互変換ツール");
-        // 🚨 新規追加: metaDescriptionを追加
-        model.addAttribute("metaDescription", "CSVファイルからExcel (xlsx) への変換、またはExcelからCSVへの変換をオンラインで行う無料ツール。開発時のデータ操作を効率化します。");
-        // 🚨 独自ドメイン設定: Canonical URLを設定
+        // 🚨 修正: ページタイトルとメタディスクリプションを最適化
+        model.addAttribute("pageTitle", "Excel (XLSX) ⇄ CSV 相互変換ツール");
+        model.addAttribute("metaDescription", "Excel (.xlsx) と CSV ファイルを高速に相互変換するオンラインツール。大容量データの処理と正確なデータ型維持をサポートします。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/excel-tools");
-        
         model.addAttribute("content", "excel-tools");
         return "layout";
     }
 
-    /**
-     * CSV → Excel (ResponseEntityでファイルとして返す)
-     */
+    // CSV → Excel (ResponseEntityでファイルとして返す)
     @PostMapping("/csv-to-excel")
-    public Object csvToExcel(@RequestParam("csvFile") MultipartFile csvFile, Model model) {
+    public ResponseEntity<ByteArrayResource> csvToExcel(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
             byte[] excelBytes = excelToolService.convertCsvToExcel(csvFile);
             
@@ -62,29 +55,15 @@ public class ExcelToolController {
                     .body(resource);
                     
         } catch (IllegalArgumentException e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
-            model.addAttribute("pageTitle", "Excel ⇄ CSV 相互変換ツール");
-            model.addAttribute("metaDescription", "CSVファイルからExcel (xlsx) への変換、またはExcelからCSVへの変換をオンラインで行う無料ツール。開発時のデータ操作を効率化します。");
-            model.addAttribute("canonicalUrl", "https://convertertools.jp/excel-tools");
-            model.addAttribute("error", e.getMessage()); 
-            model.addAttribute("content", "excel-tools");
-            return "layout";
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
-            model.addAttribute("pageTitle", "Excel ⇄ CSV 相互変換ツール");
-            model.addAttribute("metaDescription", "CSVファイルからExcel (xlsx) への変換、またはExcelからCSVへの変換をオンラインで行う無料ツール。開発時のデータ操作を効率化します。");
-            model.addAttribute("canonicalUrl", "https://convertertools.jp/excel-tools");
-            model.addAttribute("error", "Excel変換中に予期せぬエラーが発生しました。");
-            model.addAttribute("content", "excel-tools");
-            return "layout";
+            return ResponseEntity.internalServerError().build();
         }
     }
 
-    /**
-     * Excel → CSV (ResponseEntityでファイルとして返す)
-     */
+    // Excel → CSV (ResponseEntityでファイルとして返す)
     @PostMapping("/excel-to-csv")
-    public Object excelToCsv(@RequestParam("excelFile") MultipartFile excelFile, Model model) {
+    public ResponseEntity<ByteArrayResource> excelToCsv(@RequestParam("excelFile") MultipartFile excelFile) {
         try {
             byte[] csvBytes = excelToolService.convertExcelToCsv(excelFile);
             
@@ -104,21 +83,9 @@ public class ExcelToolController {
                     .body(resource);
                     
         } catch (IllegalArgumentException e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
-            model.addAttribute("pageTitle", "Excel ⇄ CSV 相互変換ツール");
-            model.addAttribute("metaDescription", "CSVファイルからExcel (xlsx) への変換、またはExcelからCSVへの変換をオンラインで行う無料ツール。開発時のデータ操作を効率化します。");
-            model.addAttribute("canonicalUrl", "https://convertertools.jp/excel-tools");
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("content", "excel-tools");
-            return "layout";
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
-            model.addAttribute("pageTitle", "Excel ⇄ CSV 相互変換ツール");
-            model.addAttribute("metaDescription", "CSVファイルからExcel (xlsx) への変換、またはExcelからCSVへの変換をオンラインで行う無料ツール。開発時のデータ操作を効率化します。");
-            model.addAttribute("canonicalUrl", "https://convertertools.jp/excel-tools");
-            model.addAttribute("error", "CSV変換中に予期せぬエラーが発生しました。");
-            model.addAttribute("content", "excel-tools");
-            return "layout";
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

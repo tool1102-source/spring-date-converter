@@ -21,15 +21,10 @@ public class PdfToolController {
 
     @GetMapping("/pdf-tools")
     public String showPdfTools(Model model) {
-        // 🚨 SEO修正: pageTitleを最適化
+        // 🚨 修正: ページタイトルとメタディスクリプションを最適化
         model.addAttribute("pageTitle", "PDF ↔ テキスト 変換ツール（作成・抽出）");
-        
-        // 🚨 新規追加: metaDescriptionを追加
-        model.addAttribute("metaDescription", "テキストファイルからPDFを作成、または既存のPDFからテキストを抽出する無料オンラインツール。開発時のドキュメント作成やデータ確認に便利です。");
-        
-        // 🚨 独自ドメイン設定: Canonical URLを設定
+        model.addAttribute("metaDescription", "テキストファイルからPDFを生成、またはPDFからテキストを抽出する無料オンラインツール。ドキュメント管理やデータ再利用に役立ちます。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/pdf-tools");
-        
         model.addAttribute("content", "pdf-tools");
         return "layout";
     }
@@ -44,7 +39,7 @@ public class PdfToolController {
             String originalFilename = textFile.getOriginalFilename();
             String filename = (originalFilename != null && !originalFilename.isEmpty()) ? 
                               originalFilename.replaceAll("\\.txt$", "") + ".pdf" : "converted.pdf";
-
+            
             HttpHeaders header = new HttpHeaders();
             header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 
@@ -57,20 +52,16 @@ public class PdfToolController {
                     .body(resource);
 
         } catch (IllegalArgumentException e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
+            // 🚨 ファイル未選択/ファイル空などのエラー時
             model.addAttribute("pageTitle", "PDF ↔ テキスト 変換ツール（作成・抽出）");
-            model.addAttribute("metaDescription", "テキストファイルからPDFを作成、または既存のPDFからテキストを抽出する無料オンラインツール。開発時のドキュメント作成やデータ確認に便利です。");
             model.addAttribute("canonicalUrl", "https://convertertools.jp/pdf-tools");
-            
             model.addAttribute("content", "pdf-tools");
-            model.addAttribute("error", e.getMessage()); 
+            model.addAttribute("error", e.getMessage()); // Serviceから受け取った具体的なメッセージを表示
             return "layout"; 
         } catch (Exception e) {
-            // 🚨 エラー時: ビューに戻るためにメタデータを再設定
+            // その他の変換エラー
             model.addAttribute("pageTitle", "PDF ↔ テキスト 変換ツール（作成・抽出）");
-            model.addAttribute("metaDescription", "テキストファイルからPDFを作成、または既存のPDFからテキストを抽出する無料オンラインツール。開発時のドキュメント作成やデータ確認に便利です。");
             model.addAttribute("canonicalUrl", "https://convertertools.jp/pdf-tools");
-            
             model.addAttribute("content", "pdf-tools");
             model.addAttribute("error", "PDF変換中に予期せぬエラーが発生しました。");
             return "layout";
@@ -80,9 +71,7 @@ public class PdfToolController {
     /** PDF → テキスト (テキスト結果をビューに戻す) */
     @PostMapping("/pdf-to-text")
     public String pdfToText(@RequestParam("pdfFile") MultipartFile pdfFile, Model model) {
-        // 🚨 処理開始前にメタデータを設定し、エラー時も利用
         model.addAttribute("pageTitle", "PDF ↔ テキスト 変換ツール（作成・抽出）");
-        model.addAttribute("metaDescription", "テキストファイルからPDFを作成、または既存のPDFからテキストを抽出する無料オンラインツール。開発時のドキュメント作成やデータ確認に便利です。");
         model.addAttribute("canonicalUrl", "https://convertertools.jp/pdf-tools");
         model.addAttribute("content", "pdf-tools");
 
@@ -94,7 +83,6 @@ public class PdfToolController {
         } catch (IOException e) {
             model.addAttribute("error", "PDFからのテキスト抽出中にエラーが発生しました。");
         }
-        
-        return "layout"; 
+        return "layout";
     }
 }
