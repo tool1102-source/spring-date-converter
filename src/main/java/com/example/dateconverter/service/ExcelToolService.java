@@ -7,30 +7,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class ExcelToolService {
 
-    private static final String DOWNLOAD_DIR = "downloads";
-
-    public ExcelToolService() throws IOException {
-        Files.createDirectories(Paths.get(DOWNLOAD_DIR));
-    }
-
     /**
-     * CSV → Excel
+     * CSV → Excel (結果をバイト配列で返す)
      */
-    public String convertCsvToExcel(MultipartFile csvFile) throws Exception {
+    public byte[] convertCsvToExcel(MultipartFile csvFile) throws Exception {
         if (csvFile.isEmpty()) {
             throw new IllegalArgumentException("CSVファイルが選択されていません。");
         }
 
-        File outputFile = new File(DOWNLOAD_DIR, csvFile.getOriginalFilename().replaceAll("\\.csv$", "") + ".xlsx");
-
         try (
-            Reader reader = new InputStreamReader(csvFile.getInputStream(), "UTF-8");
-            Workbook workbook = new XSSFWorkbook()
+            // BOM付きCSVファイル対応のため、InputStreamReaderを使用
+            Reader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8); 
+            Workbook workbook = new XSSFWorkbook();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream() // メモリにExcelを書き出す
         ) {
             Sheet sheet = workbook.createSheet("Sheet1");
             CSVParser csvParser = CSVFormat.DEFAULT.parse(reader);
@@ -43,39 +37,64 @@ public class ExcelToolService {
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-                workbook.write(fos);
-            }
+            workbook.write(bos);
+            
+            return bos.toByteArray(); 
         }
-
-        return "/" + DOWNLOAD_DIR + "/" + outputFile.getName();
     }
 
     /**
-     * Excel → CSV
+     * Excel → CSV (結果をバイト配列で返す)
      */
-    public String convertExcelToCsv(MultipartFile excelFile) throws Exception {
+    public byte[] convertExcelToCsv(MultipartFile excelFile) throws Exception {
         if (excelFile.isEmpty()) {
             throw new IllegalArgumentException("Excelファイルが選択されていません。");
         }
 
-        File outputFile = new File(DOWNLOAD_DIR, excelFile.getOriginalFilename().replaceAll("\\.xlsx?$", "") + ".csv");
-
         try (
             InputStream is = excelFile.getInputStream();
             Workbook workbook = WorkbookFactory.create(is);
-            BufferedWriter writer = Files.newBufferedWriter(outputFile.toPath());
-            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(); // メモリにCSVを書き出す
+            // WriterとしてOutputStreamWriterを使用
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(bos, StandardCharsets.UTF_8)); 
+            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT) 
         ) {
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 for (Cell cell : row) {
-                    csvPrinter.print(cell.toString());
+                    // セルの値を取得し、文字列としてCSVに出力
+                    csvPrinter.print(getCellValueAsString(cell));
                 }
                 csvPrinter.println();
             }
+            csvPrinter.flush();
+            
+            return bos.toByteArray();
         }
+    }
 
-        return "/" + DOWNLOAD_DIR + "/" + outputFile.getName();
+    // Excelセルの内容を安全に文字列として取得するヘルパーメソッド
+    private String getCellValueAsString(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        
+        // 以下のswitch式を修正し、defaultケースを追加しました
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> {
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    yield cell.getDateCellValue().toString();
+                } else {
+                    // 数値の小数点以下のゼロを省略するためにフォーマット
+                    DataFormatter formatter = new DataFormatter();
+                    yield formatter.formatCellValue(cell);
+                }
+            }
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case FORMULA -> cell.getCellFormula();
+            // BLANK, ERROR, およびその他の未定義のケースをdefaultで処理
+            default -> ""; 
+        };
     }
 }

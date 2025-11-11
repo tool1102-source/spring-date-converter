@@ -2,12 +2,15 @@ package com.example.dateconverter.controller;
 
 import com.example.dateconverter.service.PdfToolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @Controller
@@ -16,7 +19,6 @@ public class PdfToolController {
     @Autowired
     private PdfToolService pdfToolService;
 
-    /** ✅ 画面表示（GET） */
     @GetMapping("/pdf-tools")
     public String showPdfTools(Model model) {
         model.addAttribute("pageTitle", "PDFツール");
@@ -24,38 +26,57 @@ public class PdfToolController {
         return "layout";
     }
 
-    /** ✅ テキスト → PDF */
+    /** テキスト → PDF (修正: 戻り値をObjectにし、エラー時にビューに戻る) */
     @PostMapping("/text-to-pdf")
-    public String textToPdf(@RequestParam("textFile") MultipartFile textFile, Model model) {
-        model.addAttribute("pageTitle", "PDFツール");
-        model.addAttribute("content", "pdf-tools");
-
+    public Object textToPdf(@RequestParam("textFile") MultipartFile textFile, Model model) {
+        
         try {
-            File pdfFile = pdfToolService.convertTextToPdf(textFile);
+            byte[] pdfBytes = pdfToolService.convertTextToPdf(textFile);
 
-            // ✅ 修正：File オブジェクトではなくファイル名のみ渡す
-            String downloadFileName = pdfFile.getName(); 
-            model.addAttribute("message", "PDFに変換しました！");
-            model.addAttribute("downloadLink", "/download/" + downloadFileName);
+            String originalFilename = textFile.getOriginalFilename();
+            String filename = (originalFilename != null && !originalFilename.isEmpty()) ? 
+                              originalFilename.replaceAll("\\.txt$", "") + ".pdf" : "converted.pdf";
 
-        } catch (IOException e) {
-            model.addAttribute("error", "変換中にエラーが発生しました: " + e.getMessage());
+            HttpHeaders header = new HttpHeaders();
+            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+            
+            ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+            
+            // 正常終了時は ResponseEntity (ファイルダウンロード) を返す
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .contentLength(pdfBytes.length)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+
+        } catch (IllegalArgumentException e) {
+            // 🚨 ファイル未選択/ファイル空などのエラー時
+            model.addAttribute("pageTitle", "PDFツール");
+            model.addAttribute("content", "pdf-tools");
+            model.addAttribute("error", e.getMessage()); // Serviceから受け取った具体的なメッセージを表示
+            return "layout"; 
+        } catch (Exception e) {
+            // その他の変換エラー
+            model.addAttribute("pageTitle", "PDFツール");
+            model.addAttribute("content", "pdf-tools");
+            model.addAttribute("error", "PDF変換中に予期せぬエラーが発生しました。");
+            return "layout";
         }
-
-        return "layout";
     }
 
-    /** ✅ PDF → テキスト */
+    /** PDF → テキスト (テキスト結果をビューに戻す) */
     @PostMapping("/pdf-to-text")
     public String pdfToText(@RequestParam("pdfFile") MultipartFile pdfFile, Model model) {
         model.addAttribute("pageTitle", "PDFツール");
         model.addAttribute("content", "pdf-tools");
 
         try {
-            String text = pdfToolService.convertPdfToText(pdfFile);
+            String text = pdfToolService.convertPdfToText(pdfFile); 
             model.addAttribute("message", text);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
         } catch (IOException e) {
-            model.addAttribute("error", "変換中にエラーが発生しました: " + e.getMessage());
+            model.addAttribute("error", "PDFからのテキスト抽出中にエラーが発生しました。");
         }
 
         return "layout";

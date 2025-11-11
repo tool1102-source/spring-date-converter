@@ -1,5 +1,10 @@
 package com.example.dateconverter.controller;
 
+import org.springframework.beans.factory.annotation.Autowired; // 🚨 追加
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +17,12 @@ public class ExcelToolController {
 
     private final ExcelToolService excelToolService;
 
+    // 🚨 修正: @Autowired を明示的に追加
+    @Autowired 
     public ExcelToolController(ExcelToolService excelToolService) {
         this.excelToolService = excelToolService;
     }
 
-    // 画面表示
     @GetMapping
     public String showExcelTools(Model model) {
         model.addAttribute("pageTitle", "Excelツール");
@@ -24,39 +30,59 @@ public class ExcelToolController {
         return "layout";
     }
 
-    // CSV → Excel
+    // CSV → Excel (ResponseEntityでファイルとして返す)
     @PostMapping("/csv-to-excel")
-    public String csvToExcel(@RequestParam("csvFile") MultipartFile csvFile, Model model) {
-        model.addAttribute("pageTitle", "Excelツール");
-        model.addAttribute("content", "excel-tools");
-
+    public ResponseEntity<ByteArrayResource> csvToExcel(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            String downloadLink = excelToolService.convertCsvToExcel(csvFile);
-            model.addAttribute("message", "Excelファイルに変換しました！");
-            model.addAttribute("downloadLink", downloadLink);
-        } catch (Exception e) {
-            model.addAttribute("error", "変換中にエラーが発生しました: " + e.getMessage());
-        }
+            byte[] excelBytes = excelToolService.convertCsvToExcel(csvFile);
+            
+            String originalFilename = csvFile.getOriginalFilename();
+            String filename = (originalFilename != null && !originalFilename.isEmpty()) ? 
+                              originalFilename.replaceAll("\\.csv$", "") + ".xlsx" : "converted.xlsx";
 
-        return "layout";
+            HttpHeaders header = new HttpHeaders();
+            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+            
+            ByteArrayResource resource = new ByteArrayResource(excelBytes);
+
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .contentLength(excelBytes.length)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(resource);
+                    
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
-
-
-    // Excel → CSV
+    // Excel → CSV (ResponseEntityでファイルとして返す)
     @PostMapping("/excel-to-csv")
-    public String excelToCsv(@RequestParam("excelFile") MultipartFile excelFile, Model model) {
-        model.addAttribute("pageTitle", "Excelツール");
-        model.addAttribute("content", "excel-tools");
-
+    public ResponseEntity<ByteArrayResource> excelToCsv(@RequestParam("excelFile") MultipartFile excelFile) {
         try {
-            String downloadLink = excelToolService.convertExcelToCsv(excelFile);
-            model.addAttribute("message", "CSVファイルに変換しました！");
-            model.addAttribute("downloadLink", downloadLink);
-        } catch (Exception e) {
-            model.addAttribute("error", "変換中にエラーが発生しました: " + e.getMessage());
-        }
+            byte[] csvBytes = excelToolService.convertExcelToCsv(excelFile);
+            
+            String originalFilename = excelFile.getOriginalFilename();
+            String filename = (originalFilename != null && !originalFilename.isEmpty()) ? 
+                              originalFilename.replaceAll("\\.xlsx?$", "") + ".csv" : "converted.csv";
 
-        return "layout";
+            HttpHeaders header = new HttpHeaders();
+            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+
+            ByteArrayResource resource = new ByteArrayResource(csvBytes);
+
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .contentLength(csvBytes.length)
+                    .contentType(MediaType.parseMediaType("text/csv"))
+                    .body(resource);
+                    
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
