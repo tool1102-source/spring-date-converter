@@ -1,73 +1,30 @@
-<div class="container py-5">
-    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold text-dark">
-                無料で使える開発者向け多機能データ変換ツール集
-            </h1>
-            <p class="fs-4 mt-4 text-muted">
-                JSON, CSV, Epoch Time, PDF, 文字列操作など、日常の煩雑なデータ処理を<br>
-                瞬時に解決するオンラインユーティリティを提供します。
-            </p>
-            <a th:href="@{/date-tools}" class="btn btn-primary btn-lg mt-4 shadow">
-                今すぐツールを使ってみる
+<div class="container-fluid bg-primary text-white text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">開発者のためのオールインワン変換ツール</h1>
+        <p class="lead mb-4">JSON, CSV, Epoch Time, PDFなど、開発やデータ分析に必要な多機能ツールを無料で提供します。</p>
+        </div>
+</div>
+
+<div class="container">
+    <h2 class="text-center mb-5 fw-bold">🚀 すぐに使える主要ツール一覧</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${tools != null}">
+        <div class="col" th:each="tool : ${tools}">
+            <a th:href="@{${tool.url}}" class="card-link text-decoration-none">
+                <div class="card h-100 shadow-sm transition-hover">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">
+                            <span th:text="${tool.icon}" class="me-2"></span>
+                            <span th:text="${tool.name}"></span>
+                        </h5>
+                        <p class="card-text text-muted" th:text="${tool.description}"></p>
+                    </div>
+                </div>
             </a>
         </div>
     </div>
-
-    <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">📅 日付/Epoch変換</h5>
-                    <p class="card-text text-muted">標準日付とEpochミリ秒の相互変換、日付フォーマットの整形を簡単に行えます。</p>
-                    <a th:href="@{/date-tools}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">📊 JSON ⇄ CSV/TSV</h5>
-                    <p class="card-text text-muted">JSONとCSV/TSVの双方向変換。ネストされたJSONにも対応。</p>
-                    <a th:href="@{/json-csv}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">💾 Excel ⇄ CSV</h5>
-                    <p class="card-text text-muted">Excelファイル(.xlsx)とCSVファイルの相互変換。ファイルアップロードで処理します。</p>
-                    <a th:href="@{/excel-tools}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">📄 PDF ↔ テキスト</h5>
-                    <p class="card-text text-muted">テキストからPDFを作成、またはPDFからテキストデータを抽出します。</p>
-                    <a th:href="@{/pdf-tools}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">⚙️ 文字列操作</h5>
-                    <p class="card-text text-muted">正規表現での検索/置換、Base64、URLエンコード/デコード、ハッシュ生成など。</p>
-                    <a th:href="@{/string-tools}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">🔠 テキスト変換</h5>
-                    <p class="card-text text-muted">全角/半角、カタカナ、大文字/小文字、HTMLエスケープなど表記形式を変換します。</p>
-                    <a th:href="@{/text-tools}" class="btn btn-outline-primary">使ってみる</a>
-                </div>
-            </div>
-        </div>
+    
+    <div class="text-center mt-5">
+        <p class="lead">すべてのツールはブラウザ側で動作するため、**高速**かつ**安全**です（ファイル処理を除く）。</p>
     </div>
 </div>
