@@ -1,62 +1,183 @@
-<div class="container my-5">
+<div class="container py-5">
+    <h1 class="mb-5">🔠 テキスト表記変換ツール</h1>
     
-    <h1 class="text-center mb-3 text-secondary">🔠 テキスト・エンコード/デコード & 形式変換ツール</h1>
-    
-    <p class="lead text-center text-muted mb-5">
-        大文字・小文字、全角・半角、HTMLエスケープなど、<strong>文字列の表記形式</strong>を一括で変換します。様々な環境で発生する文字化けや表示の問題を解決します。
-    </p>
-
-    <div class="tool-form">
-        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
-
-        <form th:action="@{/text-tools/convert}" method="post">
+    <div class="p-4 mb-5 bg-light rounded-3 shadow-sm">
+        <h2 class="mb-4 fs-4">表記形式 変換</h2>
+        <div id="textFormResult" class="alert mt-3" style="display:none;"></div>
+        
+        <form id="textForm" onsubmit="handleTextConversion(event)">
+            <div class="mb-3">
+                <label for="textInput" class="form-label">入力テキスト</label>
+                <textarea id="textInput" name="textInput" class="form-control" rows="8" placeholder="全角・半角・かな・英数字が混在したテキストを入力してください。" required></textarea>
+            </div>
+            
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="inputText" class="form-label">入力テキスト</label>
-                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
-                </div>
-                <div class="col-md-6">
-                    <label for="result" class="form-label">変換結果</label>
-                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
-                </div>
-            </div>
-            
-            <div class="row mb-5">
-                <div class="col-md-4 offset-md-4">
-                    <label for="operation" class="form-label">変換操作を選択</label>
-                    <select class="form-select mb-3" id="operation" name="operation" th:value="${operation}">
-                        <option value="to_upper">全て大文字に</option>
-                        <option value="to_lower">全て小文字に</option>
-                        <option value="half_to_full_katakana">半角カナ → 全角カナ</option>
-                        <option value="full_to_half_katakana">全角カナ → 半角カナ</option>
-                        <option value="html_escape">HTMLエスケープ</option>
-                        <option value="html_unescape">HTMLアンエスケープ</option>
+                    <label for="textMode" class="form-label">変換モード</label>
+                    <select id="textMode" name="textMode" class="form-select" required>
+                        <option value="toHalfWidth">全角 → 半角</option>
+                        <option value="toFullWidth">半角 → 全角</option>
+                        <option value="toHiragana">カタカナ → ひらがな</option>
+                        <option value="toKatakana">ひらがな → カタカナ</option>
+                        <option value="toLower">大文字 → 小文字</option>
+                        <option value="toUpper">小文字 → 大文字</option>
+                        <option value="htmlEscape">HTMLエスケープ</option>
+                        <option value="htmlUnescape">HTMLアンエスケープ</option>
                     </select>
-                    <button type="submit" class="btn btn-secondary btn-lg w-100">変換実行</button>
                 </div>
             </div>
+            
+            <button type="submit" class="btn btn-primary me-2">実行</button>
+            <button type="button" class="btn btn-secondary" onclick="clearTextResults('textForm', 'textInput', 'textResult')">クリア</button>
         </form>
-    </div>
-    
-    <hr class="my-5">
 
-    <div class="row">
-        <div class="col-lg-10 offset-lg-1">
-            <h2 class="mb-3">日本語特有の文字形式（全角・半角）への対応</h2>
-            <p>
-                データベースの検索や入力値の検証において、<strong>全角カタカナ</strong>と<strong>半角カタカナ</strong>の違いはしばしば問題となります。当ツールは、これらの表記揺れを吸収し、データの一貫性を保つための変換機能を提供します。
-            </p>
-            
-            <h3>ケース（大文字・小文字）の高速変換</h3>
-            <p>
-                SQLキーワードやプログラムの定数、JSONキーなど、テキストを全て大文字（UPPER CASE）または全て小文字（lower case）に瞬時に変換できます。コード規約の統一や、データの正規化に役立ちます。
-            </p>
-            
-            <h3>HTMLエンティティとエスケープ処理</h3>
-            <p>
-                Web開発において、HTML特殊文字（&lt;, &gt;, &amp;など）を安全に表示するため、または逆にエスケープされたテキストを復元するために、HTMLエンティティのエンコード/デコード機能が役立ちます。
-            </p>
+        <div class="mt-5">
+            <label for="textResult" class="form-label">結果</label>
+            <textarea id="textResult" name="textResult" class="form-control" rows="8" readonly placeholder="ここに変換結果が表示されます。"></textarea>
         </div>
     </div>
-
 </div>
+
+<script>
+/**
+ * ユーティリティ: 結果/エラーメッセージを表示する関数
+ */
+function displayResult(formId, message, isError) {
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (!resultDiv) return;
+
+    resultDiv.innerHTML = message;
+    resultDiv.className = isError 
+        ? 'alert alert-danger mt-3' 
+        : 'alert alert-success mt-3';
+    resultDiv.style.display = 'block';
+}
+
+/**
+ * ユーティリティ: クリアボタンの処理
+ */
+function clearTextResults(formId, inputId, resultId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(resultId).value = '';
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (resultDiv) {
+        resultDiv.style.display = 'none';
+    }
+}
+
+/**
+ * 全角・半角・かな変換のコアロジック
+ * @param {string} str - 入力文字列
+ * @param {string} mode - 変換モード ('a':全角→半角, 'A':半角→全角, 'h':カタカナ→ひらがな, 'H':ひらがな→カタカナ)
+ */
+function convertString(str, mode) {
+    const hankaku = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｯｬｭｮｰ｡､･ﾞﾟ";
+    const zenkaku = "アイウエオカキクケコサシースセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォッャュョー。、・「」゛゜";
+    let result = '';
+
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charAt(i);
+        
+        if (mode === 'toHalfWidth' || mode === 'toFullWidth') {
+            // 全角・半角変換
+            let index = -1;
+            if (mode === 'toHalfWidth') { // 全角→半角
+                index = zenkaku.indexOf(char);
+                if (index !== -1) {
+                    char = hankaku.charAt(index);
+                }
+            } else { // 半角→全角
+                index = hankaku.indexOf(char);
+                if (index !== -1) {
+                    char = zenkaku.charAt(index);
+                }
+            }
+        } else if (mode === 'toHiragana') {
+            // カタカナ→ひらがな
+            char = char.replace(/[\u30a1-\u30f6]/g, function(match) {
+                return String.fromCharCode(match.charCodeAt(0) - 0x60);
+            });
+        } else if (mode === 'toKatakana') {
+            // ひらがな→カタカナ
+            char = char.replace(/[\u3041-\u3096]/g, function(match) {
+                return String.fromCharCode(match.charCodeAt(0) + 0x60);
+            });
+        }
+
+        // 英数字・記号の全角半角変換（簡易）
+        if (mode === 'toHalfWidth') {
+            char = char.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            });
+        } else if (mode === 'toFullWidth') {
+             char = char.replace(/[A-Za-z0-9]/g, function(s) {
+                return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+            });
+        }
+        
+        result += char;
+    }
+    return result;
+}
+
+// =========================================================
+// メインの変換ハンドラ
+// =========================================================
+function handleTextConversion(event) {
+    event.preventDefault(); 
+    const formId = 'textForm';
+    const form = document.getElementById(formId);
+    
+    const input = form.elements['textInput'].value;
+    const mode = form.elements['textMode'].value;
+    const resultTextarea = document.getElementById('textResult');
+    let result = '';
+    let successMessage = '';
+
+    if (!input) {
+        displayResult(formId, '入力テキストを入力してください。', true);
+        resultTextarea.value = '';
+        return;
+    }
+
+    try {
+        if (mode === 'toHalfWidth' || mode === 'toFullWidth' || 
+            mode === 'toHiragana' || mode === 'toKatakana') {
+            // 全角・半角・かな変換
+            result = convertString(input, mode);
+            successMessage = '表記形式の変換が完了しました。';
+        } else if (mode === 'toLower') {
+            // 小文字化
+            result = input.toLowerCase();
+            successMessage = '小文字への変換が完了しました。';
+        } else if (mode === 'toUpper') {
+            // 大文字化
+            result = input.toUpperCase();
+            successMessage = '大文字への変換が完了しました。';
+        } else if (mode === 'htmlEscape') {
+            // HTMLエスケープ (& < > " ' を変換)
+            result = input.replace(/&/g, '&amp;')
+                          .replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;')
+                          .replace(/'/g, '&#39;');
+            successMessage = 'HTMLエスケープが完了しました。';
+        } else if (mode === 'htmlUnescape') {
+            // HTMLアンエスケープ
+            result = input.replace(/&lt;/g, '<')
+                          .replace(/&gt;/g, '>')
+                          .replace(/&quot;/g, '"')
+                          .replace(/&#39;/g, "'")
+                          .replace(/&amp;/g, '&');
+            successMessage = 'HTMLアンエスケープが完了しました。';
+        }
+        
+        resultTextarea.value = result;
+        displayResult(formId, successMessage, false);
+
+    } catch (e) {
+        resultTextarea.value = '';
+        displayResult(formId, `エラーが発生しました: ${e.message}`, true);
+    }
+}
+</script>

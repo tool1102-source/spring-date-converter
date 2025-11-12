@@ -1,54 +1,203 @@
-<div class="container my-5">
+<div class="container py-5">
+    <h1 class="mb-5">📊 JSON ⇄ CSV/TSV 変換ツール</h1>
     
-    <h1 class="text-center mb-3 text-success">📊 JSON ⇄ CSV/TSV 相互変換ツール</h1>
-    
-    <p class="lead text-center text-muted mb-5">
-        構造化された <strong>JSON</strong> データと、表形式の <strong>CSV/TSV</strong> データを双方向に変換します。APIのレスポンスをスプレッドシートで開きたい場合や、CSVデータからJSON構造を生成したい場合に役立ちます。
-    </p>
-
-    <div class="tool-form">
-        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
+    <div class="p-4 mb-5 bg-light rounded-3 shadow-sm">
+        <p>JSONデータとCSV/TSVフォーマットを双方向に変換します。ネストされたJSONはシンプルに展開されます。</p>
         
-        <form th:action="@{/json-csv/convert}" method="post">
+        <div id="jsonCsvFormResult" class="alert mt-3" style="display:none;"></div>
+        
+        <form id="jsonCsvForm" onsubmit="handleJsonCsvConversion(event)">
+            <div class="mb-3">
+                <label for="inputText" class="form-label">入力データ (JSON配列またはCSV)</label>
+                <textarea id="inputText" name="inputText" class="form-control" rows="15" placeholder="JSON配列 ([{...}, {...}]) または CSVテキストを入力してください。" required></textarea>
+            </div>
+
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="inputText" class="form-label">入力データ (JSONまたはCSV)</label>
-                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
+                    <label for="mode" class="form-label">変換モード</label>
+                    <select id="mode" name="mode" class="form-select" required>
+                        <option value="jsonToCsv">JSON → CSV</option>
+                        <option value="csvToJson">CSV → JSON</option>
+                    </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="result" class="form-label">変換結果</label>
-                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
+                    <label for="delimiter" class="form-label">区切り文字</label>
+                    <select id="delimiter" name="delimiter" class="form-select">
+                        <option value=",">カンマ (CSV)</option>
+                        <option value="\t">タブ (TSV)</option>
+                    </select>
                 </div>
             </div>
             
-            <div class="row mb-5">
-                <div class="col-12 text-center">
-                    <button type="submit" name="mode" value="jsonToCsv" class="btn btn-success btn-lg mx-2">JSON → CSV 変換</button>
-                    <button type="submit" name="mode" value="csvToJson" class="btn btn-primary btn-lg mx-2">CSV → JSON 変換</button>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-primary me-2">変換を実行</button>
+            <button type="button" class="btn btn-secondary" onclick="clearResults('jsonCsvForm', 'inputText', 'resultText')">クリア</button>
         </form>
-    </div>
-    
-    <hr class="my-5">
 
-    <div class="row">
-        <div class="col-lg-10 offset-lg-1">
-            <h2 class="mb-3">JSONとCSVの役割とデータ連携</h2>
-            <p>
-                JSON (JavaScript Object Notation) は、Web APIで標準的に利用される軽量なデータ交換形式です。一方、CSV (Comma Separated Values) は、表計算ソフトやデータベースへのインポート/エクスポートに最も広く使用されています。
-            </p>
-            
-            <h3>変換時のヘッダー処理とネスト対応</h3>
-            <p>
-                JSONからCSVへ変換する際、オブジェクトのキーが自動的にCSVのヘッダー行として抽出されます。また、<strong>ネストされたJSON構造</strong>を持つデータに対しても、可能な限りフラットなCSV形式に変換できるよう内部処理を最適化しています。
-            </p>
-            
-            <h3>TSV (Tab Separated Values) への対応</h3>
-            <p>
-                当ツールでは、オプションでカンマ区切り（CSV）だけでなく、タブ区切り（TSV）のデータ形式にも対応可能です。これにより、より複雑なデータや特殊なシステムとのデータ連携もスムーズに行えます。
-            </p>
+        <div class="mt-5">
+            <label for="resultText" class="form-label">変換結果</label>
+            <textarea id="resultText" name="resultText" class="form-control" rows="15" readonly placeholder="ここに変換結果が表示されます。"></textarea>
         </div>
     </div>
-
 </div>
+
+<script>
+/**
+ * ユーティリティ: 結果/エラーメッセージを表示する関数
+ */
+function displayResult(formId, message, isError) {
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (!resultDiv) return;
+
+    resultDiv.innerHTML = message;
+    resultDiv.className = isError 
+        ? 'alert alert-danger mt-3' 
+        : 'alert alert-success mt-3';
+    resultDiv.style.display = 'block';
+}
+
+/**
+ * ユーティリティ: クリアボタンの処理
+ */
+function clearResults(formId, inputId, resultId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(resultId).value = '';
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (resultDiv) {
+        resultDiv.style.display = 'none';
+    }
+}
+
+/**
+ * CSV値のエスケープ (カンマや引用符が含まれる場合)
+ */
+function escapeCsv(value) {
+    if (value === null || value === undefined) return "";
+    let str = String(value);
+    
+    // 値にカンマ、二重引用符、改行が含まれている場合は二重引用符で囲む
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        // 既存の二重引用符は二重にする
+        str = str.replace(/"/g, '""');
+        return `"${str}"`;
+    }
+    return str;
+}
+
+/**
+ * JSON配列をCSVテキストに変換
+ */
+function jsonToCsv(jsonString, delimiter) {
+    let jsonArray;
+    try {
+        jsonArray = JSON.parse(jsonString);
+    } catch (e) {
+        throw new Error('入力されたJSONの形式が正しくありません。');
+    }
+
+    if (!Array.isArray(jsonArray) || jsonArray.length === 0) {
+        return "";
+    }
+
+    // すべてのキーを収集 (ネストされたJSONは無視)
+    const keysSet = new Set();
+    jsonArray.forEach(obj => {
+        // ネストされたオブジェクトや配列はキーとして除外せずに、値として処理
+        Object.keys(obj).forEach(key => keysSet.add(key));
+    });
+
+    const keys = Array.from(keysSet);
+    const rows = [];
+
+    // ヘッダー行
+    rows.push(keys.join(delimiter));
+
+    // データ行
+    jsonArray.forEach(obj => {
+        const row = keys.map(key => {
+            const value = obj[key];
+            // ネストされたオブジェクトや配列は文字列化してCSV値としてエスケープ
+            if (typeof value === 'object' && value !== null) {
+                return escapeCsv(JSON.stringify(value));
+            }
+            return escapeCsv(value);
+        });
+        rows.push(row.join(delimiter));
+    });
+
+    return rows.join('\n');
+}
+
+/**
+ * CSVテキストをJSON配列に変換
+ */
+function csvToJson(csvString, delimiter) {
+    const lines = csvString.trim().split('\n');
+    if (lines.length < 2) {
+        // ヘッダー行のみの場合または空の場合
+        return "[]";
+    }
+
+    // ヘッダー行の処理 (エスケープされていないと仮定)
+    const headers = lines[0].split(delimiter).map(h => h.trim());
+    const jsonArray = [];
+
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // 簡単なCSVパース (引用符内の区切り文字は未対応)
+        const values = line.split(delimiter);
+        const obj = {};
+        
+        for (let j = 0; j < headers.length; j++) {
+            const value = j < values.length ? values[j].trim() : "";
+            obj[headers[j]] = value;
+        }
+        jsonArray.push(obj);
+    }
+
+    // 見やすいようにインデント付きでJSONを返す
+    return JSON.stringify(jsonArray, null, 2);
+}
+
+
+/**
+ * メインの変換ハンドラ
+ */
+function handleJsonCsvConversion(event) {
+    event.preventDefault(); 
+    const formId = 'jsonCsvForm';
+    const form = document.getElementById(formId);
+    
+    const inputText = form.elements['inputText'].value.trim();
+    const mode = form.elements['mode'].value;
+    const delimiterValue = form.elements['delimiter'].value;
+
+    // TSVのためのタブ文字を決定
+    const delimiter = delimiterValue === '\\t' ? '\t' : delimiterValue; 
+    
+    const resultTextarea = document.getElementById('resultText');
+
+    if (!inputText) {
+        displayResult(formId, '入力データを入力してください。', true);
+        resultTextarea.value = '';
+        return;
+    }
+
+    try {
+        let result;
+        if (mode === 'jsonToCsv') {
+            result = jsonToCsv(inputText, delimiter);
+        } else {
+            result = csvToJson(inputText, delimiter);
+        }
+
+        resultTextarea.value = result;
+        displayResult(formId, `${mode === 'jsonToCsv' ? 'JSON' : 'CSV'}から${mode === 'jsonToCsv' ? 'CSV' : 'JSON'}への変換が完了しました。`, false);
+        
+    } catch (e) {
+        resultTextarea.value = '';
+        displayResult(formId, `エラー: ${e.message}`, true);
+    }
+}
+</script>

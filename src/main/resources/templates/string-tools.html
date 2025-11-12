@@ -1,78 +1,174 @@
-<div class="container my-5">
+<div class="container py-5">
+    <h1 class="mb-5">⚙️ 文字列操作・変換ユーティリティ</h1>
     
-    <h1 class="text-center mb-3 text-info">⚙️ 文字列操作・整形ツール（正規表現・置換・抽出）</h1>
-    
-    <p class="lead text-center text-muted mb-5">
-        <strong>正規表現（Regex）</strong>を使った強力な一括置換・抽出から、Base64やURLエンコード/デコード、ハッシュ生成まで、開発者が日常的に必要とする複雑な文字列操作を瞬時に行えます。
-    </p>
-
-    <div class="tool-form">
-        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">エラーメッセージ</div>
-
-        <form th:action="@{/string-tools/process}" method="post">
+    <div class="p-4 mb-5 bg-light rounded-3 shadow-sm">
+        <h2 class="mb-4 fs-4">Base64 エンコード / デコード</h2>
+        <div id="base64FormResult" class="alert mt-3" style="display:none;"></div>
+        
+        <form id="base64Form" onsubmit="handleBase64Conversion(event)">
+            <div class="mb-3">
+                <label for="base64Input" class="form-label">入力テキスト</label>
+                <textarea id="base64Input" name="base64Input" class="form-control" rows="8" placeholder="エンコードまたはデコードしたいテキスト/Base64文字列を入力してください。" required></textarea>
+            </div>
+            
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="inputText" class="form-label">入力テキスト</label>
-                    <textarea class="form-control" id="inputText" name="inputText" rows="10" th:text="${inputText} ?: ''"></textarea>
-                </div>
-                <div class="col-md-6">
-                    <label for="result" class="form-label">処理結果</label>
-                    <textarea class="form-control" id="result" name="result" rows="10" readonly th:text="${result} ?: ''"></textarea>
+                    <label for="base64Mode" class="form-label">操作</label>
+                    <select id="base64Mode" name="base64Mode" class="form-select" required>
+                        <option value="encode">テキスト → Base64 (エンコード)</option>
+                        <option value="decode">Base64 → テキスト (デコード)</option>
+                    </select>
                 </div>
             </div>
             
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label for="operation" class="form-label">操作選択</label>
-                            <select class="form-select" id="operation" name="operation" th:value="${operation}">
-                                <option value="regex_replace">正規表現置換</option>
-                                <option value="regex_extract">正規表現抽出</option>
-                                <option value="base64_encode">Base64エンコード</option>
-                                <option value="base64_decode">Base64デコード</option>
-                                <option value="url_encode">URLエンコード</option>
-                                <option value="url_decode">URLデコード</option>
-                                <option value="md5_hash">MD5ハッシュ</option>
-                                <option value="sha256_hash">SHA-256ハッシュ</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="regex" class="form-label">正規表現パターン (Regex/置換時のみ)</label>
-                            <input type="text" class="form-control" id="regex" name="regex" th:value="${regex}" placeholder="例: [a-zA-Z]+">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="replacement" class="form-label">置換文字列 (置換時のみ)</label>
-                            <input type="text" class="form-control" id="replacement" name="replacement" th:value="${replacement}" placeholder="例: REPLACED">
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <button type="submit" class="btn btn-info btn-lg">実行</button>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-primary me-2">実行</button>
+            <button type="button" class="btn btn-secondary" onclick="clearStringResults('base64Form', 'base64Input', 'base64Result')">クリア</button>
         </form>
+
+        <div class="mt-5">
+            <label for="base64Result" class="form-label">結果</label>
+            <textarea id="base64Result" name="base64Result" class="form-control" rows="8" readonly placeholder="ここに結果が表示されます。"></textarea>
+        </div>
     </div>
     
-    <hr class="my-5">
+    <div class="p-4 mb-5 bg-light rounded-3 shadow-sm">
+        <h2 class="mb-4 fs-4">URL エンコード / デコード</h2>
+        <div id="urlFormResult" class="alert mt-3" style="display:none;"></div>
+        
+        <form id="urlForm" onsubmit="handleUrlConversion(event)">
+            <div class="mb-3">
+                <label for="urlInput" class="form-label">入力文字列</label>
+                <textarea id="urlInput" name="urlInput" class="form-control" rows="8" placeholder="エンコード/デコードしたいURLまたは文字列を入力してください。" required></textarea>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="urlMode" class="form-label">操作</label>
+                    <select id="urlMode" name="urlMode" class="form-select" required>
+                        <option value="encode">URLエンコード (パーセントエンコーディング)</option>
+                        <option value="decode">URLデコード</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary me-2">実行</button>
+            <button type="button" class="btn btn-secondary" onclick="clearStringResults('urlForm', 'urlInput', 'urlResult')">クリア</button>
+        </form>
 
-    <div class="row">
-        <div class="col-lg-10 offset-lg-1">
-            <h2 class="mb-3">正規表現による文字列処理の効率化</h2>
-            <p>
-                正規表現は、特定のパターンを持つ文字列を検索、置換、または抽出するための強力なツールです。当ツールを使用することで、大量のログファイルや設定ファイルの中から必要なデータだけを正確に取得し、作業効率を大幅に向上させることができます。
-            </p>
-            
-            <h3>様々なエンコーディングに対応</h3>
-            <p>
-                当ツールの文字列操作には、Web通信で使われる<strong>URLエンコード・デコード</strong>や、バイナリデータをテキスト形式に変換する<strong>Base64エンコード・デコード</strong>機能が含まれます。APIキーの検証や、特殊文字を含むURLのデバッグ時に便利です。
-            </p>
-            
-            <h3>パスワードの安全性とハッシュ生成</h3>
-            <p>
-                パスワードや機密データの安全性を確認するため、MD5、SHA-256などのハッシュ関数を使った文字列のハッシュ生成にも対応しています。
-            </p>
+        <div class="mt-5">
+            <label for="urlResult" class="form-label">結果</label>
+            <textarea id="urlResult" name="urlResult" class="form-control" rows="8" readonly placeholder="ここに結果が表示されます。"></textarea>
         </div>
     </div>
 
-</div>
+    </div>
+
+<script>
+/**
+ * ユーティリティ: 結果/エラーメッセージを表示する関数
+ */
+function displayStringResult(formId, message, isError) {
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (!resultDiv) return;
+
+    resultDiv.innerHTML = message;
+    resultDiv.className = isError 
+        ? 'alert alert-danger mt-3' 
+        : 'alert alert-success mt-3';
+    resultDiv.style.display = 'block';
+}
+
+/**
+ * ユーティリティ: クリアボタンの処理
+ */
+function clearStringResults(formId, inputId, resultId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(resultId).value = '';
+    const resultDiv = document.getElementById(formId + 'Result');
+    if (resultDiv) {
+        resultDiv.style.display = 'none';
+    }
+}
+
+// =========================================================
+// 1. Base64 変換ロジック
+// =========================================================
+function handleBase64Conversion(event) {
+    event.preventDefault(); 
+    const formId = 'base64Form';
+    const form = document.getElementById(formId);
+    
+    const input = form.elements['base64Input'].value.trim();
+    const mode = form.elements['base64Mode'].value;
+    const resultTextarea = document.getElementById('base64Result');
+
+    if (!input) {
+        displayStringResult(formId, '入力テキストを入力してください。', true);
+        resultTextarea.value = '';
+        return;
+    }
+
+    try {
+        let result = '';
+        if (mode === 'encode') {
+            // テキストをBase64にエンコード
+            // btoaはASCII文字列にしか使えないため、日本語対応のためにはUTF-8を処理する必要があります。
+            // サーバー負荷軽減が目的なので、ここでは簡易的な日本語対応ロジックを使用します。
+            const utf8Encoded = new TextEncoder().encode(input);
+            result = btoa(String.fromCharCode.apply(null, utf8Encoded));
+            displayStringResult(formId, 'Base64エンコードが完了しました。', false);
+        } else {
+            // Base64からテキストにデコード
+            const decoded = atob(input);
+            // デコードされたバイトデータをUTF-8テキストに戻す
+            const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
+            result = new TextDecoder().decode(bytes);
+            displayStringResult(formId, 'Base64デコードが完了しました。', false);
+        }
+        
+        resultTextarea.value = result;
+
+    } catch (e) {
+        resultTextarea.value = '';
+        displayStringResult(formId, 'エラー: 入力形式が不正です。デコードの場合、有効なBase64文字列を入力してください。', true);
+    }
+}
+
+// =========================================================
+// 2. URL 変換ロジック
+// =========================================================
+function handleUrlConversion(event) {
+    event.preventDefault(); 
+    const formId = 'urlForm';
+    const form = document.getElementById(formId);
+    
+    const input = form.elements['urlInput'].value.trim();
+    const mode = form.elements['urlMode'].value;
+    const resultTextarea = document.getElementById('urlResult');
+
+    if (!input) {
+        displayStringResult(formId, '入力文字列を入力してください。', true);
+        resultTextarea.value = '';
+        return;
+    }
+
+    try {
+        let result = '';
+        if (mode === 'encode') {
+            // URLエンコード (encodeURIComponentを使用)
+            result = encodeURIComponent(input);
+            displayStringResult(formId, 'URLエンコードが完了しました。', false);
+        } else {
+            // URLデコード (decodeURIComponentを使用)
+            result = decodeURIComponent(input);
+            displayStringResult(formId, 'URLデコードが完了しました。', false);
+        }
+        
+        resultTextarea.value = result;
+
+    } catch (e) {
+        resultTextarea.value = '';
+        displayStringResult(formId, 'エラー: 入力形式が不正です。デコードの場合、不正なパーセントエンコーディングが含まれています。', true);
+    }
+}
+</script>
