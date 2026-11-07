@@ -48,7 +48,7 @@ LANG=C.UTF-8 BASE_URL=http://localhost:3000 node tests/e2e.js
 
 ## 更新するとき
 
-CSS や JS を書き換えたら、HTML と `_partials/head.html` の `?v=20261108a` の数字を上げてください（ブラウザに新しいファイルを読ませるため）。
+CSS や JS を書き換えたら、HTML と `_partials/head.html` の `?v=20261107b` の数字を上げてください（ブラウザに新しいファイルを読ませるため）。
 
 ## 旧ドメイン（convertertools.jp）について
 
