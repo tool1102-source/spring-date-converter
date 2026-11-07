@@ -1,4 +1,4 @@
-# ConverterTools.jp は HTML・CSS・JavaScript だけで動く静的サイト。
+# ConverterTools は HTML・CSS・JavaScript だけで動く静的サイト。
 # 変換処理はすべて訪問者のブラウザ内で行うので、サーバーはファイルを配るだけの nginx で十分。
 FROM nginx:1.27-alpine
 

@@ -3,3 +3,4 @@ tests/output/
 .DS_Store
 .idea/
 .vscode/
+dist/

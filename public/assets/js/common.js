@@ -1,4 +1,4 @@
-/* ConverterTools.jp 共通の小道具（コピー・ダウンロード・ファイル読み込みなど） */
+/* ConverterTools 共通の小道具（コピー・ダウンロード・ファイル読み込みなど） */
 (function () {
   'use strict';
   const CT = (window.CT = window.CT || {});
@@ -154,7 +154,7 @@
       if (a.dataset.page === page) a.setAttribute('aria-current', 'page');
     });
     const year = new Date().getFullYear();
-    CT.$$('.footer-copy').forEach((el) => (el.textContent = '© 2025' + (year > 2025 ? '–' + year : '') + ' ConverterTools.jp'));
+    CT.$$('.footer-copy').forEach((el) => (el.textContent = '© 2025' + (year > 2025 ? '–' + year : '') + ' ConverterTools'));
   });
 
   // <button data-copy="#id"> でその要素の中身をコピー

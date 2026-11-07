@@ -56,9 +56,9 @@ async function typeInto(page, sel, value) {
     const res = await page.goto(BASE + p);
     eq(`${p} が表示される`, res.status(), 200);
     const title = await page.title();
-    check(`${p} のタイトル`, title.endsWith('| ConverterTools.jp') && title.length > 20, title);
+    check(`${p} のタイトル`, title.endsWith('| ConverterTools') && title.length > 20, title);
     const canonical = await page.getAttribute('link[rel=canonical]', 'href');
-    eq(`${p} の canonical`, canonical, 'https://convertertools.jp' + p);
+    eq(`${p} の canonical`, canonical, 'https://tools.web100tsukuru.com' + p);
   }
   eq('存在しないページは 404', (await page.goto(BASE + '/nope')).status(), 404);
   check('404 画面に案内がある', (await page.textContent('h1')).includes('見つかりません'));

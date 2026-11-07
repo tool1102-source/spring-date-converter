@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://convertertools.jp/sitemap.xml
+Sitemap: https://tools.web100tsukuru.com/sitemap.xml
