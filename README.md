@@ -29,7 +29,6 @@ public/
   assets/vendor/                      SheetJS・pdf.js
 scripts/build.mjs                     public/ → dist/ の書き出し
 tests/e2e.js                          ブラウザで全ツールを動かすテスト
-Dockerfile, nginx/                    旧ドメイン convertertools.jp 用（下記）
 ```
 
 ## 手元で動かす
@@ -53,4 +52,4 @@ CSS や JS を書き換えたら、HTML と `_partials/head.html` の `?v=202611
 
 ## 旧ドメイン（convertertools.jp）について
 
-以前は convertertools.jp で、Render の Docker サービス（`Dockerfile` の nginx）として動かしていました。ドメインは更新しないので、期限が切れたら `Dockerfile` と `nginx/` と Render の旧サービスは消してかまいません。
+以前は convertertools.jp で、Render の Docker サービス（nginx）として動かしていました。ドメインは更新しないことにしたので、そのための `Dockerfile` と `nginx/` は 2026-11-07 に消しました（中身は git の履歴に残っています）。
