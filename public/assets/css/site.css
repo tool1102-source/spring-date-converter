@@ -1,45 +1,53 @@
 /* =========================================================
    ConverterTools
+   技術者の道具箱：紺の見出し・青・方眼・等幅の文字。
+   webサイト100個作る人のほかのサイト（トップ・ブログ・投票所）と見分けがつくように、色と形を変えている。
    ========================================================= */
 :root {
-  --bg: #f6f6f3;
+  --bg: #eef2f8;
   --surface: #ffffff;
-  --surface-2: #f0f0ec;
-  --text: #18191c;
-  --muted: #5d6068;
-  --border: #e2e2dc;
-  --border-strong: #cfcfc7;
-  --accent: #0f766e;
-  --accent-hover: #0b5f58;
-  --accent-soft: #e3f2ef;
+  --surface-2: #e8eef7;
+  --text: #0b1220;
+  --muted: #55607a;
+  --border: #d5ddea;
+  --border-strong: #b7c3d6;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #e2ebff;
   --accent-text: #ffffff;
   --danger: #b42318;
   --danger-soft: #fdecea;
   --ok: #067647;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 2px rgba(16, 24, 40, .05);
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "BIZ UDGothic", "Osaka-Mono", monospace;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 2px rgba(11, 18, 32, .06);
+  --grid: rgba(37, 99, 235, .07);
+  --bar: #0b1220;
+  --bar-text: #e6edf8;
+  --bar-muted: #93a1bd;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "BIZ UDGothic", "Osaka-Mono", monospace;
   --sans: system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121316;
-    --surface: #1a1b1f;
-    --surface-2: #222328;
-    --text: #e9e9ec;
-    --muted: #a2a5ad;
-    --border: #2c2e34;
-    --border-strong: #3a3d44;
-    --accent: #2dd4bf;
-    --accent-hover: #5eead4;
-    --accent-soft: rgba(45, 212, 191, .12);
-    --accent-text: #06201d;
+    --bg: #0a0f1c;
+    --surface: #111a2e;
+    --surface-2: #18233b;
+    --text: #e6edf8;
+    --muted: #93a1bd;
+    --border: #22304d;
+    --border-strong: #31426a;
+    --accent: #60a5fa;
+    --accent-hover: #93c5fd;
+    --accent-soft: rgba(96, 165, 250, .14);
+    --accent-text: #0a0f1c;
     --danger: #f97066;
     --danger-soft: rgba(249, 112, 102, .12);
     --ok: #47cd89;
     --shadow: none;
+    --grid: rgba(96, 165, 250, .06);
+    --bar: #050811;
   }
 }
 
@@ -52,7 +60,10 @@ body {
   font-size: 16px;
   line-height: 1.7;
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--bg);
+  /* うすい方眼（設計図のような背景） */
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -67,18 +78,24 @@ code, kbd { font-family: var(--mono); font-size: .9em; background: var(--surface
 .skip-link { position: absolute; left: -999px; top: 8px; background: var(--surface); padding: 8px 12px; border-radius: 8px; z-index: 10; }
 .skip-link:focus { left: 8px; }
 
-/* ---------- ヘッダー ---------- */
-.topbar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--border); }
+/* ---------- いちばん上の細い帯（webサイト100個作る人のトップへ戻る） ---------- */
+.hub-strip { background: #050811; color: var(--bar-muted); font-size: .74rem; font-family: var(--mono); }
+.hub-strip-inner { max-width: 1120px; margin: 0 auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 28px; }
+.hub-strip a { color: inherit; text-decoration: none; }
+.hub-strip a:hover { color: var(--bar-text); text-decoration: underline; }
+
+/* ---------- ヘッダー（紺の帯） ---------- */
+.topbar { position: sticky; top: 0; z-index: 5; background: var(--bar); border-bottom: 2px solid var(--accent); }
 .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 20px; min-height: 58px; }
-.brand { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; font-weight: 750; letter-spacing: -.01em; white-space: nowrap; }
-.brand:hover { color: var(--text); }
-.brand-mark { width: 26px; height: 26px; padding: 3px; border-radius: 7px; background: var(--accent); color: var(--accent-text); }
-.brand-tld { color: var(--muted); font-weight: 500; }
+.brand { display: inline-flex; align-items: center; gap: 8px; color: var(--bar-text); text-decoration: none; font-family: var(--mono); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+.brand:hover { color: var(--bar-text); }
+.brand-mark { width: 26px; height: 26px; padding: 3px; border-radius: 5px; background: var(--accent); color: #ffffff; }
+.brand-tld { color: var(--bar-muted); font-weight: 500; }
 .nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
 .nav::-webkit-scrollbar { display: none; }
-.nav a { white-space: nowrap; color: var(--muted); text-decoration: none; font-size: .9rem; padding: 6px 10px; border-radius: 8px; }
-.nav a:hover { color: var(--text); background: var(--surface-2); }
-.nav a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); font-weight: 650; }
+.nav a { white-space: nowrap; color: var(--bar-muted); text-decoration: none; font-size: .88rem; padding: 6px 10px; border-radius: 5px; }
+.nav a:hover { color: var(--bar-text); background: rgba(255, 255, 255, .08); }
+.nav a[aria-current="page"] { color: #ffffff; background: var(--accent); font-weight: 650; }
 
 @media (max-width: 760px) {
   .topbar-inner { flex-wrap: wrap; gap: 0; padding-top: 10px; }
@@ -197,6 +214,7 @@ select { appearance: none; padding-right: 34px; background-image: linear-gradien
 .hero { padding: 24px 0 32px; max-width: 760px; }
 .hero h1 { font-size: clamp(1.8rem, 5.5vw, 2.8rem); letter-spacing: -.02em; }
 .hero h1 em { font-style: normal; color: var(--accent); }
+.hero::before { content: "No.001 // converter tools"; display: block; margin-bottom: 10px; font-family: var(--mono); font-size: .78rem; color: var(--accent); letter-spacing: .04em; }
 .hero .lead { margin-top: 12px; font-size: 1.05rem; color: var(--muted); }
 .hero-points { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0 0; padding: 0; list-style: none; font-size: .9rem; }
 .hero-points li { display: inline-flex; align-items: center; gap: 6px; }
