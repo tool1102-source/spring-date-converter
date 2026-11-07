@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="PDF ⇄ テキスト 変換ツール（文字の抽出・PDFの作成）" -->
+<!--# set var="desc" value="PDFから文字を取り出してテキストにしたり、文章をPDFにしたりできる無料ツール。日本語にも対応し、ページ数が多くても大丈夫。ファイルはブラウザ内で処理され、サーバーには送られません。" -->
+<!--# set var="path" value="/pdf-tools" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="pdf">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>PDF ⇄ テキスト 変換</h1>
+    <p class="lead">PDF から文字を取り出したり、文章を PDF にしたりできます。</p>
+    <span class="privacy-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>ファイルはサーバーに送られません</span>
+  </div>
+
+  <div class="io">
+    <section class="panel" aria-labelledby="p2t-h">
+      <div class="panel-head"><h2 id="p2t-h">PDF → テキスト</h2></div>
+      <div class="panel-body">
+        <label class="drop" id="p2t-drop">
+          <input type="file" accept=".pdf,application/pdf">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>PDF ファイルを選ぶ</strong><br>またはここにドロップ</span>
+        </label>
+        <p class="message" id="p2t-msg"></p>
+        <div id="p2t-result" hidden>
+          <div class="stack" style="gap: 12px">
+            <p class="file-info" id="p2t-file"></p>
+            <label class="check"><input type="checkbox" id="p2t-sep" checked> ページの区切りを入れる</label>
+            <textarea id="p2t-out" readonly spellcheck="false" aria-label="取り出した文字"></textarea>
+            <div class="actions">
+              <button type="button" class="btn btn-primary" data-copy="#p2t-out">コピー</button>
+              <button type="button" class="btn btn-secondary" id="p2t-download">テキストをダウンロード</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="t2p-h">
+      <div class="panel-head"><h2 id="t2p-h">テキスト → PDF</h2></div>
+      <div class="panel-body">
+        <div class="field">
+          <label for="t2p-in">PDF にする文章</label>
+          <textarea id="t2p-in" placeholder="ここに文章を入力するか、テキストファイルを選んでください。"></textarea>
+        </div>
+        <label class="drop" id="t2p-drop" style="padding: 14px">
+          <input type="file" accept=".txt,.md,.csv,text/plain">
+          <span><strong>テキストファイルを選ぶ</strong>（.txt など・Shift_JIS も可）</span>
+        </label>
+        <div class="inline">
+          <div class="field"><label for="t2p-title">ファイル名</label><input type="text" id="t2p-title" placeholder="document"></div>
+          <div class="field" style="flex: 0 1 130px">
+            <label for="t2p-size">文字の大きさ</label>
+            <select id="t2p-size"><option value="9">小（9pt）</option><option value="10.5" selected>標準（10.5pt）</option><option value="12">大（12pt）</option><option value="14">特大（14pt）</option></select>
+          </div>
+          <div class="field" style="flex: 0 1 110px">
+            <label for="t2p-orient">向き</label>
+            <select id="t2p-orient"><option value="portrait">A4 縦</option><option value="landscape">A4 横</option></select>
+          </div>
+          <div class="field" style="flex: 0 1 110px">
+            <label for="t2p-margin">余白</label>
+            <select id="t2p-margin"><option value="10">狭い</option><option value="20" selected>標準</option><option value="30">広い</option></select>
+          </div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-primary" id="t2p-make">PDF を作る</button></div>
+        <p class="hint">印刷の画面が開きます。送り先（プリンター）で「PDF に保存」を選んでください。iPhone では共有ボタンから PDF として保存できます。</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="about">
+    <section>
+      <h2>PDF → テキスト について</h2>
+      <ul>
+        <li>何ページあっても、すべてのページから文字を取り出します。</li>
+        <li>紙をスキャンしただけの PDF（中身が画像）は、文字の情報がないため取り出せません。</li>
+        <li>パスワードで保護された PDF は読み取れません。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>テキスト → PDF について</h2>
+      <ul>
+        <li>ブラウザの「PDF に保存」機能を使うので、日本語も長い文章もきれいに PDF になります。</li>
+        <li>文字の大きさ・用紙の向き・余白を選べます。</li>
+        <li>長い行は、用紙の幅に合わせて自動で折り返します。</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/pdf.js?v=20261107" defer></script>
+</body>
+</html>

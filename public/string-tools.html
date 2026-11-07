@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="文字列ツール（Base64・URLエンコード・ハッシュ・UUID）" -->
+<!--# set var="desc" value="Base64のエンコード・デコード（日本語・URLセーフ・ファイル対応）、URLエンコード、MD5・SHA-256などのハッシュ計算、UUIDの生成ができる無料ツール。すべてブラウザ内で処理します。" -->
+<!--# set var="path" value="/string-tools" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="string">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>文字列ツール</h1>
+    <p class="lead">Base64・URL エンコード・ハッシュの計算・UUID の生成ができます。日本語もそのまま使えます。</p>
+  </div>
+
+  <div class="stack">
+    <section class="panel" aria-labelledby="b64-h">
+      <div class="panel-head">
+        <h2 id="b64-h">Base64</h2>
+        <div class="segmented" id="b64-mode" role="group" aria-label="Base64 の向き">
+          <button type="button" data-value="enc" aria-pressed="true">エンコード</button>
+          <button type="button" data-value="dec" aria-pressed="false">デコード</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="io">
+          <div class="field"><label for="b64-in">入力</label><textarea id="b64-in" spellcheck="false" style="min-height: 140px" placeholder="こんにちは"></textarea></div>
+          <div class="field">
+            <div class="label-row"><label for="b64-out">結果</label><button type="button" class="btn btn-ghost" data-copy="#b64-out">コピー</button></div>
+            <textarea id="b64-out" readonly spellcheck="false" style="min-height: 140px"></textarea>
+          </div>
+        </div>
+        <div class="inline" style="align-items: center">
+          <label class="check"><input type="checkbox" id="b64-url"> URL セーフ（+ / を - _ にし、= を省く）</label>
+          <label class="drop" id="b64-drop" style="padding: 10px 14px; flex: 1 1 260px">
+            <input type="file">
+            <span><strong>ファイルを Base64 にする</strong>（画像など）</span>
+          </label>
+          <label class="check"><input type="checkbox" id="b64-dataurl" checked> data URL の形にする</label>
+        </div>
+        <p class="message" id="b64-msg"></p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="url-h">
+      <div class="panel-head">
+        <h2 id="url-h">URL エンコード</h2>
+        <div class="segmented" id="url-mode" role="group" aria-label="URL エンコードの種類">
+          <button type="button" data-value="component" aria-pressed="true">エンコード</button>
+          <button type="button" data-value="uri" aria-pressed="false">URL全体をエンコード</button>
+          <button type="button" data-value="dec" aria-pressed="false">デコード</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="io">
+          <div class="field"><label for="url-in">入力</label><textarea id="url-in" spellcheck="false" style="min-height: 120px" placeholder="東京 タワー&amp;page=1"></textarea></div>
+          <div class="field">
+            <div class="label-row"><label for="url-out">結果</label><button type="button" class="btn btn-ghost" data-copy="#url-out">コピー</button></div>
+            <textarea id="url-out" readonly spellcheck="false" style="min-height: 120px"></textarea>
+          </div>
+        </div>
+        <p class="hint">「エンコード」は検索語やパラメータの値に、「URL全体をエンコード」は : / ? &amp; を残したいときに使います。</p>
+        <label class="check" id="url-plus-wrap" hidden><input type="checkbox" id="url-plus" checked> + を空白として読む（フォームの送信データ用）</label>
+        <p class="message" id="url-msg"></p>
+      </div>
+    </section>
+
+    <div class="io">
+      <section class="panel" aria-labelledby="hash-h">
+        <div class="panel-head">
+          <h2 id="hash-h">ハッシュ値</h2>
+          <label class="check"><input type="checkbox" id="hash-upper"> 大文字</label>
+        </div>
+        <div class="panel-body">
+          <div class="field"><label for="hash-in">入力（UTF-8 として計算）</label><textarea id="hash-in" spellcheck="false" style="min-height: 100px" placeholder="password"></textarea></div>
+          <dl class="results" id="hash-out"></dl>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="uuid-h">
+        <div class="panel-head">
+          <h2 id="uuid-h">UUID（v4）の生成</h2>
+          <button type="button" class="btn btn-primary" id="uuid-make">作り直す</button>
+        </div>
+        <div class="panel-body">
+          <div class="inline" style="align-items: center">
+            <div class="field" style="flex: 0 1 120px"><label for="uuid-count">個数</label><input type="number" id="uuid-count" value="5" min="1" max="1000"></div>
+            <label class="check"><input type="checkbox" id="uuid-upper"> 大文字</label>
+            <label class="check"><input type="checkbox" id="uuid-hyphen" checked> ハイフンあり</label>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="uuid-out">結果</label><button type="button" class="btn btn-ghost" data-copy="#uuid-out">コピー</button></div>
+            <textarea id="uuid-out" readonly spellcheck="false" style="min-height: 140px"></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="about">
+    <section>
+      <h2>Base64 について</h2>
+      <ul>
+        <li>日本語などは UTF-8 として変換します。ほかのサイトやプログラムと同じ結果になります。</li>
+        <li>JWT や URL に入れる場合は「URL セーフ」を使います。</li>
+        <li>画像をファイルで選ぶと、HTML や CSS に直接書ける data URL を作れます。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>ハッシュと UUID について</h2>
+      <ul>
+        <li>MD5・SHA-1 は古い方式です。パスワードの保存などには使わないでください。</li>
+        <li>UUID はブラウザの安全な乱数で作ります。</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/string.js?v=20261107" defer></script>
+</body>
+</html>

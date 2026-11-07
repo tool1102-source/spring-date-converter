@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="日付・Epoch Time 変換ツール（UNIX時間 ⇄ 日時、フォーマット変換）" -->
+<!--# set var="desc" value="UNIX時間（Epoch秒・ミリ秒）と日本時間・UTCの相互変換、日付フォーマットの一括変換ができる無料ツール。桁数から秒・ミリ秒を自動判別し、ブラウザ内ですぐに結果が出ます。" -->
+<!--# set var="path" value="/date-tools" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="date">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>日付・Epoch Time 変換</h1>
+    <p class="lead">UNIX時間（Epoch）と日時の相互変換と、日付の書き方の一括変換ができます。入力するとすぐに結果が出ます。</p>
+  </div>
+
+  <div class="stack">
+    <section class="panel" aria-labelledby="now-h">
+      <div class="panel-head"><h2 id="now-h">いまの時刻</h2></div>
+      <div class="panel-body">
+        <div class="stat-grid">
+          <div class="stat"><span class="stat-label">Epoch 秒 <button type="button" class="btn btn-ghost" data-copy="#now-s">コピー</button></span><span class="stat-value" id="now-s">-</span></div>
+          <div class="stat"><span class="stat-label">Epoch ミリ秒 <button type="button" class="btn btn-ghost" data-copy="#now-ms">コピー</button></span><span class="stat-value" id="now-ms">-</span></div>
+          <div class="stat"><span class="stat-label">日本時間 <button type="button" class="btn btn-ghost" data-copy="#now-jst">コピー</button></span><span class="stat-value" id="now-jst">-</span></div>
+          <div class="stat"><span class="stat-label">UTC <button type="button" class="btn btn-ghost" data-copy="#now-utc">コピー</button></span><span class="stat-value" id="now-utc">-</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="io">
+      <section class="panel" aria-labelledby="epoch-h">
+        <div class="panel-head">
+          <h2 id="epoch-h">Epoch → 日時</h2>
+          <button type="button" class="btn btn-ghost" id="epoch-now">いまの時刻を入れる</button>
+        </div>
+        <div class="panel-body">
+          <div class="inline">
+            <div class="field">
+              <label for="epoch-in">Epoch（UNIX時間）</label>
+              <input type="text" id="epoch-in" class="mono" inputmode="numeric" placeholder="例：1716168600 または 1716168600000" autocomplete="off">
+            </div>
+            <div class="field" style="flex: 0 1 170px">
+              <label for="epoch-unit">単位</label>
+              <select id="epoch-unit">
+                <option value="auto">自動で判別</option>
+                <option value="s">秒</option>
+                <option value="ms">ミリ秒</option>
+                <option value="us">マイクロ秒</option>
+                <option value="ns">ナノ秒</option>
+              </select>
+            </div>
+          </div>
+          <p class="message" id="epoch-msg"></p>
+          <dl class="results" id="epoch-out"></dl>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="dt-h">
+        <div class="panel-head">
+          <h2 id="dt-h">日時 → Epoch</h2>
+          <button type="button" class="btn btn-ghost" id="dt-now">いまの時刻を入れる</button>
+        </div>
+        <div class="panel-body">
+          <div class="inline">
+            <div class="field">
+              <label for="dt-in">日時</label>
+              <input type="text" id="dt-in" class="mono" placeholder="例：2024/05/20 10:30:00" autocomplete="off">
+            </div>
+            <div class="field" style="flex: 0 1 220px">
+              <label for="dt-zone">どこの時刻として計算するか</label>
+              <select id="dt-zone">
+                <option value="Asia/Tokyo">日本時間（JST）</option>
+                <option value="UTC">UTC</option>
+                <option value="local">端末のタイムゾーン</option>
+              </select>
+            </div>
+          </div>
+          <p class="hint">「2024-05-20T10:30:00+09:00」のように時差が書いてあれば、そちらを優先します。「2024年5月20日 10時30分」のような書き方も読めます。</p>
+          <p class="message" id="dt-msg"></p>
+          <dl class="results" id="dt-out"></dl>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="fmt-h">
+      <div class="panel-head">
+        <h2 id="fmt-h">日付の書き方をまとめて変換</h2>
+        <p class="hint">1行に1つずつ日付を貼り付けると、すべての行を指定した書き方に変換します。</p>
+      </div>
+      <div class="panel-body">
+        <div class="inline">
+          <div class="field">
+            <label for="fmt-from">入力の書き方（空なら自動判別）</label>
+            <input type="text" id="fmt-from" class="mono" placeholder="例：yyyy/MM/dd HH:mm" autocomplete="off" list="fmt-list">
+          </div>
+          <div class="field">
+            <label for="fmt-to">出力の書き方</label>
+            <input type="text" id="fmt-to" class="mono" value="yyyy-MM-dd HH:mm:ss" autocomplete="off" list="fmt-list">
+          </div>
+          <div class="field" style="flex: 0 1 220px">
+            <label for="fmt-preset">よく使う書き方</label>
+            <select id="fmt-preset">
+              <option value="">選んでください</option>
+              <option value="yyyy-MM-dd HH:mm:ss">2024-05-20 10:30:00</option>
+              <option value="yyyy/MM/dd HH:mm:ss">2024/05/20 10:30:00</option>
+              <option value="yyyy/MM/dd">2024/05/20</option>
+              <option value="yyyyMMdd">20240520</option>
+              <option value="yyyy年M月d日（E）">2024年5月20日（月）</option>
+              <option value="yyyy年M月d日 H時m分">2024年5月20日 10時30分</option>
+              <option value="yyyy-MM-dd'T'HH:mm:ss">2024-05-20T10:30:00</option>
+              <option value="M/d/yyyy">5/20/2024（米国式）</option>
+              <option value="dd/MM/yyyy">20/05/2024（欧州式）</option>
+            </select>
+            <datalist id="fmt-list">
+              <option value="yyyy/MM/dd HH:mm:ss"></option>
+              <option value="yyyy-MM-dd"></option>
+              <option value="yyyyMMdd"></option>
+              <option value="yyyy年M月d日"></option>
+            </datalist>
+          </div>
+        </div>
+        <div class="io">
+          <div class="field">
+            <label for="fmt-in">変換したい日付（1行に1つ）</label>
+            <textarea id="fmt-in" placeholder="2024/05/20 10:30:00&#10;2024-12-31&#10;2025年1月1日 9時0分"></textarea>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="fmt-out">結果</label><button type="button" class="btn btn-ghost" data-copy="#fmt-out">コピー</button></div>
+            <textarea id="fmt-out" readonly></textarea>
+          </div>
+        </div>
+        <p class="message" id="fmt-msg"></p>
+        <details class="ref">
+          <summary>書き方の記号の一覧</summary>
+          <table>
+            <thead><tr><th>記号</th><th>意味</th><th>例</th></tr></thead>
+            <tbody>
+              <tr><td>yyyy / yy</td><td>年（4桁 / 2桁）</td><td>2024 / 24</td></tr>
+              <tr><td>MM / M</td><td>月（2桁 / そのまま）</td><td>05 / 5</td></tr>
+              <tr><td>dd / d</td><td>日（2桁 / そのまま）</td><td>09 / 9</td></tr>
+              <tr><td>HH / H</td><td>時（24時間）</td><td>07 / 7</td></tr>
+              <tr><td>mm / m</td><td>分</td><td>05 / 5</td></tr>
+              <tr><td>ss / s</td><td>秒</td><td>03 / 3</td></tr>
+              <tr><td>SSS</td><td>ミリ秒</td><td>120</td></tr>
+              <tr><td>E</td><td>曜日（出力のみ）</td><td>月</td></tr>
+              <tr><td>'T'</td><td>' で囲むとそのままの文字</td><td>T</td></tr>
+            </tbody>
+          </table>
+        </details>
+      </div>
+    </section>
+  </div>
+
+  <div class="about">
+    <section>
+      <h2>Epoch（UNIX時間）とは</h2>
+      <ul>
+        <li>1970年1月1日 0時0分0秒（UTC）からの経過時間です。</li>
+        <li>10桁なら秒、13桁ならミリ秒のことがほとんどです。このツールは桁数から自動で判別します。</li>
+        <li>日本時間は UTC より9時間進んでいます（夏時間はありません）。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>こんなときに</h2>
+      <ul>
+        <li>ログやデータベースに入っている数字の時刻を読みたいとき</li>
+        <li>API に渡す Epoch 値を作りたいとき</li>
+        <li>表計算ソフトから出した日付の書き方をそろえたいとき</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/date.js?v=20261107" defer></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="JSON ⇄ CSV 変換ツール（TSV・ネストしたJSONにも対応）" -->
+<!--# set var="desc" value="JSONとCSV・TSVを相互に変換する無料ツール。ネストしたJSONは列に展開し、引用符や改行を含む値も正しく扱います。Excelで文字化けしないBOM付きCSVの保存にも対応。" -->
+<!--# set var="path" value="/json-csv" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="json">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>JSON ⇄ CSV 変換</h1>
+    <p class="lead">JSON と CSV・TSV を相互に変換します。貼り付けるかファイルを選ぶと、すぐに結果が出ます。</p>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div class="segmented" id="jc-mode" role="group" aria-label="変換の向き">
+        <button type="button" data-value="j2c" aria-pressed="true">JSON → CSV</button>
+        <button type="button" data-value="c2j" aria-pressed="false">CSV → JSON</button>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" id="jc-swap" title="結果を入力に移して、向きを逆にします">⇄ 結果を入力に戻す</button>
+        <button type="button" class="btn btn-ghost" id="jc-clear">クリア</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="inline" id="opt-j2c">
+        <div class="field" style="flex: 0 1 200px">
+          <label for="opt-out-delim">区切り文字</label>
+          <select id="opt-out-delim">
+            <option value=",">カンマ（CSV）</option>
+            <option value="tab">タブ（TSV）</option>
+            <option value=";">セミコロン</option>
+          </select>
+        </div>
+        <label class="check"><input type="checkbox" id="opt-flat" checked> 入れ子のデータを列に展開（例：user.name）</label>
+        <label class="check"><input type="checkbox" id="opt-bom" checked> Excel 用に BOM を付けて保存</label>
+      </div>
+      <div class="inline" id="opt-c2j" hidden>
+        <div class="field" style="flex: 0 1 200px">
+          <label for="opt-in-delim">区切り文字</label>
+          <select id="opt-in-delim">
+            <option value="auto">自動で判別</option>
+            <option value=",">カンマ</option>
+            <option value="tab">タブ</option>
+            <option value=";">セミコロン</option>
+          </select>
+        </div>
+        <div class="field" style="flex: 0 1 160px">
+          <label for="opt-indent">字下げ</label>
+          <select id="opt-indent">
+            <option value="2">2文字</option>
+            <option value="4">4文字</option>
+            <option value="0">なし（1行）</option>
+          </select>
+        </div>
+        <label class="check"><input type="checkbox" id="opt-header" checked> 1行目を見出しとして使う</label>
+        <label class="check"><input type="checkbox" id="opt-types" checked> 数値・true/false・null を変換</label>
+      </div>
+
+      <div class="io">
+        <div class="field">
+          <div class="label-row"><label for="jc-in" id="jc-in-label">JSON</label></div>
+          <textarea id="jc-in" spellcheck="false" placeholder='[{"id": 1, "name": "山田", "tags": ["a", "b"]}]'></textarea>
+          <label class="drop" id="jc-file">
+            <input type="file" accept=".json,.csv,.tsv,.txt,application/json,text/csv,text/plain">
+            <span><strong>ファイルを選ぶ</strong> か、ここにドロップ（.json / .csv / .tsv）</span>
+          </label>
+        </div>
+        <div class="field">
+          <div class="label-row">
+            <label for="jc-out" id="jc-out-label">CSV / TSV</label>
+            <span class="hint" id="jc-stats"></span>
+          </div>
+          <textarea id="jc-out" readonly spellcheck="false"></textarea>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" data-copy="#jc-out">コピー</button>
+            <button type="button" class="btn btn-secondary" id="jc-download">ダウンロード</button>
+          </div>
+        </div>
+      </div>
+      <p class="message" id="jc-msg"></p>
+    </div>
+  </section>
+
+  <div class="about">
+    <section>
+      <h2>JSON → CSV のしくみ</h2>
+      <ul>
+        <li>オブジェクトの配列を、1件1行の表にします。項目名は全件から集めるので、件によって項目がちがっても大丈夫です。</li>
+        <li>入れ子のオブジェクトは「user.name」のような列に展開します。配列は JSON の文字のまま入れます。</li>
+        <li>カンマ・改行・引用符を含む値は、自動で引用符で囲みます。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>CSV → JSON のしくみ</h2>
+      <ul>
+        <li>引用符で囲まれた値の中のカンマや改行も、正しく1つの値として読みます。</li>
+        <li>「0012」のように先頭が 0 の値や、16桁以上の数字は、桁が消えないよう文字のまま残します。</li>
+        <li>日本語版 Excel で保存した Shift_JIS の CSV ファイルも、文字化けせずに読めます。</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/csv.js?v=20261107" defer></script>
+<script src="/assets/js/json-csv.js?v=20261107" defer></script>
+</body>
+</html>

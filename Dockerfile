@@ -1,16 +1,15 @@
-# ベースイメージ
-FROM eclipse-temurin:17-jdk
+# ConverterTools.jp は HTML・CSS・JavaScript だけで動く静的サイト。
+# 変換処理はすべて訪問者のブラウザ内で行うので、サーバーはファイルを配るだけの nginx で十分。
+FROM nginx:1.27-alpine
 
-# 作業ディレクトリ設定
-WORKDIR /app
+# Render は PORT 環境変数（既定 10000）で待ち受けポートを伝えてくる
+ENV PORT=10000
 
-# プロジェクトファイルをコピー
-COPY . .
+# 起動時に ${PORT} を埋め込んで設定ファイルを作る（nginx 公式イメージの仕組み）
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY nginx/headers.conf /etc/nginx/headers.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 
-RUN chmod +x mvnw
+COPY public/ /usr/share/nginx/html/
 
-# jarファイルをビルド
-RUN ./mvnw clean package -DskipTests
-
-# アプリを起動
-CMD ["java", "-jar", "target/dateconverter-0.0.1-SNAPSHOT.jar"]
+EXPOSE 10000

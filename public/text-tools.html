@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="テキスト変換ツール（全角・半角・カタカナ・文字数カウント）" -->
+<!--# set var="desc" value="全角・半角、半角カナ、ひらがな・カタカナ、大文字・小文字、HTMLエスケープ、重複行の削除などをまとめて変換できる無料ツール。文字数・バイト数・原稿用紙の枚数も数えます。" -->
+<!--# set var="path" value="/text-tools" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="text">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>テキスト変換</h1>
+    <p class="lead">全角・半角やカタカナなどの書き方を変えたり、行を整理したりできます。文字数もあわせて数えます。</p>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>変換の種類</h2>
+      <div class="chips" id="tx-modes" role="group" aria-label="変換の種類"></div>
+    </div>
+    <div class="panel-body">
+      <div class="io">
+        <div class="field">
+          <div class="label-row"><label for="tx-in">入力</label><button type="button" class="btn btn-ghost" id="tx-clear">クリア</button></div>
+          <textarea id="tx-in" placeholder="ＡＢＣ１２３　ｶﾀｶﾅ　ひらがな"></textarea>
+        </div>
+        <div class="field">
+          <div class="label-row">
+            <label for="tx-out">結果</label>
+            <span class="actions">
+              <button type="button" class="btn btn-ghost" id="tx-apply" title="結果を入力に移して、続けて別の変換をかけられます">↩ 入力に戻す</button>
+              <button type="button" class="btn btn-ghost" data-copy="#tx-out">コピー</button>
+            </span>
+          </div>
+          <textarea id="tx-out" readonly></textarea>
+        </div>
+      </div>
+      <div class="stat-grid" aria-label="入力の文字数">
+        <div class="stat"><span class="stat-label">文字数</span><span class="stat-value" id="cnt-chars">0</span></div>
+        <div class="stat"><span class="stat-label">空白・改行を除く</span><span class="stat-value" id="cnt-nospace">0</span></div>
+        <div class="stat"><span class="stat-label">行数</span><span class="stat-value" id="cnt-lines">0</span></div>
+        <div class="stat"><span class="stat-label">バイト数（UTF-8）</span><span class="stat-value" id="cnt-bytes">0</span></div>
+        <div class="stat"><span class="stat-label">原稿用紙（400字）</span><span class="stat-value" id="cnt-paper">0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="about">
+    <section>
+      <h2>変換のしくみ</h2>
+      <ul>
+        <li>半角カナの「ｶﾞ」のような濁点つきの文字も、1文字の「ガ」に正しく戻します。</li>
+        <li>「↩ 入力に戻す」を押すと、続けて別の変換をかけられます（例：半角カナ → 全角カナ → ひらがな）。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>文字数の数え方</h2>
+      <ul>
+        <li>絵文字や「👨‍👩‍👧」のような組み合わせ文字も、見た目どおり1文字として数えます。</li>
+        <li>原稿用紙は 20字×20行で、改行ごとに次の行へ送って数えます。</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/text.js?v=20261107" defer></script>
+</body>
+</html>

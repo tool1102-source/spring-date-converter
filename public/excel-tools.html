@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<!--# set var="title" value="Excel ⇄ CSV 変換ツール（xlsx・Shift_JIS対応）" -->
+<!--# set var="desc" value="Excel（xlsx・xls）とCSVを相互に変換する無料ツール。シートを選んでCSVに、CSVをExcelファイルに。Shift_JISのCSVも文字化けせずに読めます。ファイルはブラウザ内で処理され、サーバーには送られません。" -->
+<!--# set var="path" value="/excel-tools" -->
+<!--# include virtual="/_partials/head.html" -->
+</head>
+<body data-page="excel">
+<!--# include virtual="/_partials/header.html" -->
+<main id="main">
+  <div class="page-head">
+    <h1>Excel ⇄ CSV 変換</h1>
+    <p class="lead">Excel ファイルを CSV に、CSV を Excel ファイルに変換します。中身を確認してからダウンロードできます。</p>
+    <span class="privacy-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>ファイルはサーバーに送られません</span>
+  </div>
+
+  <div class="io">
+    <section class="panel" aria-labelledby="x2c-h">
+      <div class="panel-head"><h2 id="x2c-h">Excel → CSV</h2></div>
+      <div class="panel-body">
+        <label class="drop" id="x2c-drop">
+          <input type="file" accept=".xlsx,.xlsm,.xls,.ods,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>Excel ファイルを選ぶ</strong><br>またはここにドロップ（.xlsx / .xls / .ods）</span>
+        </label>
+        <p class="message" id="x2c-msg"></p>
+        <div id="x2c-result" hidden>
+          <div class="stack" style="gap: 12px">
+            <p class="file-info" id="x2c-file"></p>
+            <div class="inline">
+              <div class="field" id="x2c-sheet-field"><label for="x2c-sheet">シート</label><select id="x2c-sheet"></select></div>
+              <div class="field" style="flex: 0 1 180px">
+                <label for="x2c-delim">区切り文字</label>
+                <select id="x2c-delim"><option value=",">カンマ（CSV）</option><option value="tab">タブ（TSV）</option><option value=";">セミコロン</option></select>
+              </div>
+            </div>
+            <label class="check"><input type="checkbox" id="x2c-bom" checked> Excel で開く用に BOM を付ける（文字化け防止）</label>
+            <p class="hint" id="x2c-info"></p>
+            <div class="table-wrap"><table id="x2c-table"></table></div>
+            <div class="actions"><button type="button" class="btn btn-primary" id="x2c-download">CSV をダウンロード</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="c2x-h">
+      <div class="panel-head"><h2 id="c2x-h">CSV → Excel</h2></div>
+      <div class="panel-body">
+        <label class="drop" id="c2x-drop">
+          <input type="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>CSV ファイルを選ぶ</strong><br>またはここにドロップ（.csv / .tsv）</span>
+        </label>
+        <p class="message" id="c2x-msg"></p>
+        <div id="c2x-result" hidden>
+          <div class="stack" style="gap: 12px">
+            <p class="file-info" id="c2x-file"></p>
+            <div class="inline">
+              <div class="field" style="flex: 0 1 180px">
+                <label for="c2x-delim">区切り文字</label>
+                <select id="c2x-delim"><option value="auto">自動で判別</option><option value=",">カンマ</option><option value="tab">タブ</option><option value=";">セミコロン</option></select>
+              </div>
+              <div class="field"><label for="c2x-sheetname">シート名</label><input type="text" id="c2x-sheetname" value="Sheet1" maxlength="31"></div>
+            </div>
+            <label class="check"><input type="checkbox" id="c2x-numbers" checked> 数字は数値として入れる（先頭が 0 の値や16桁以上は文字のまま）</label>
+            <p class="hint" id="c2x-info"></p>
+            <div class="table-wrap"><table id="c2x-table"></table></div>
+            <div class="actions"><button type="button" class="btn btn-primary" id="c2x-download">Excel をダウンロード</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="about">
+    <section>
+      <h2>Excel → CSV で気をつけていること</h2>
+      <ul>
+        <li>空のセルがあっても列がずれません。</li>
+        <li>数式のセルは、計算した結果の値を書き出します。</li>
+        <li>日付や数値は、Excel の画面に表示されているとおりの形で書き出します。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>CSV → Excel で気をつけていること</h2>
+      <ul>
+        <li>文字コード（UTF-8 / Shift_JIS）と区切り文字を自動で判別します。</li>
+        <li>郵便番号や社員番号のように先頭が 0 の値は、0 が消えないよう文字のまま入れます。</li>
+        <li>列の幅は中身に合わせて自動で広げます。</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<!--# include virtual="/_partials/footer.html" -->
+<script src="/assets/js/common.js?v=20261107" defer></script>
+<script src="/assets/js/csv.js?v=20261107" defer></script>
+<script src="/assets/js/excel.js?v=20261107" defer></script>
+</body>
+</html>
