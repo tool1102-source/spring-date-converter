@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://tools.web100tsukuru.com/</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/date-tools</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/json-csv</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/excel-tools</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/pdf-tools</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/string-tools</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://tools.web100tsukuru.com/text-tools</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/date-tools</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/json-csv</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/excel-tools</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/pdf-tools</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/string-tools</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://web100tsukuru.com/tools/text-tools</loc><lastmod>2026-11-07</lastmod></url>
 </urlset>

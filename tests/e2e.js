@@ -58,14 +58,14 @@ async function typeInto(page, sel, value) {
     const title = await page.title();
     check(`${p} のタイトル`, title.endsWith('| ConverterTools') && title.length > 20, title);
     const canonical = await page.getAttribute('link[rel=canonical]', 'href');
-    eq(`${p} の canonical`, canonical, 'https://tools.web100tsukuru.com' + p);
+    eq(`${p} の canonical`, canonical, 'https://web100tsukuru.com/tools' + p);
   }
   eq('存在しないページは 404', (await page.goto(BASE + '/nope')).status(), 404);
   check('404 画面に案内がある', (await page.textContent('h1')).includes('見つかりません'));
   const r301 = await page.goto(BASE + '/date-tools.html');
   // 転送される（nginx）か、そのまま開いても正式な URL を canonical で示している（静的サイト）こと
   const redirected = r301.request().redirectedFrom() !== null && new URL(page.url()).pathname === '/date-tools';
-  const canonicalOk = (await page.getAttribute('link[rel=canonical]', 'href')) === 'https://tools.web100tsukuru.com/date-tools';
+  const canonicalOk = (await page.getAttribute('link[rel=canonical]', 'href')) === 'https://web100tsukuru.com/tools/date-tools';
   check('.html 付きでも正式な URL は /date-tools', redirected || canonicalOk, page.url());
   eq('部品ファイルは直接見えない', (await page.goto(BASE + '/_partials/head.html')).status(), 404);
   await page.goto(BASE + '/ads.txt');

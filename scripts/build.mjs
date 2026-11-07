@@ -8,6 +8,11 @@
 // ここで埋め込んでおく。外部のパッケージは使わない（Node.js だけで動く）。
 //
 // 使い方： node scripts/build.mjs
+//         BASE_PATH=/tools node scripts/build.mjs   … /tools/ の下に置くとき
+//
+// BASE_PATH を付けると、ページの中の "/date-tools" や "/assets/..." のような
+// サイト内のリンク・部品の場所の頭に、その文字を足して書き出す。
+// （web100tsukuru.com/tools/ に置くときは、web100tsukuru の Dockerfile がこれを使う）
 
 import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -16,6 +21,14 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = path.join(root, 'public');
 const out = path.join(root, 'dist');
+
+const BASE = (process.env.BASE_PATH || '').replace(/\/+$/, '');
+if (BASE && !/^(\/[a-z0-9_-]+)+$/i.test(BASE)) throw new Error(`BASE_PATH の書き方が正しくありません：${BASE}（例：/tools）`);
+
+// href="/..." src="/..." の頭に BASE を足す（"//" で始まる外部の URL や https:// は対象外）
+const withBaseHtml = (html) => (BASE ? html.replace(/(\s(?:href|src|action)=")\/(?!\/)/g, `$1${BASE}/`) : html);
+// JS の中の '/assets/...' の頭に BASE を足す
+const withBaseJs = (js) => (BASE ? js.replace(/(['"`])\/assets\//g, `$1${BASE}/assets/`) : js);
 
 const DIRECTIVE = /<!--#\s*(\w+)((?:\s+\w+="[^"]*")*)\s*-->/g;
 const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -62,10 +75,18 @@ for (const e of entries) {
   if (e.isFile() && e.name.endsWith('.html')) {
     const html = await render(await readFile(from, 'utf8'), {});
     if (html.includes('<!--#')) throw new Error(`${e.name} に処理されていない命令が残っています`);
-    await writeFile(to, html);
+    await writeFile(to, withBaseHtml(html));
     pages++;
   } else {
     await cp(from, to, { recursive: true });
   }
 }
-console.log(`dist/ に書き出しました（ページ ${pages} 件）`);
+
+// 自分で書いた JS（ライブラリ以外）の中の部品の場所を直す
+const jsDir = path.join(out, 'assets', 'js');
+for (const name of await readdir(jsDir)) {
+  if (!name.endsWith('.js')) continue;
+  const file = path.join(jsDir, name);
+  await writeFile(file, withBaseJs(await readFile(file, 'utf8')));
+}
+console.log(`dist/ に書き出しました（ページ ${pages} 件${BASE ? `、置き場所 ${BASE}/` : ''}）`);

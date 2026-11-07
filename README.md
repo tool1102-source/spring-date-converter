@@ -1,6 +1,6 @@
 # ConverterTools
 
-https://tools.web100tsukuru.com/ のソースです。開発やデータ作業でよく使う変換ツールを集めたサイトで、「webサイト100個作る人」の No.001 です。
+https://web100tsukuru.com/tools/ のソースです。開発やデータ作業でよく使う変換ツールを集めたサイトで、「webサイト100個作る人」の No.001 です。
 
 | ページ | できること |
 | --- | --- |
@@ -14,7 +14,9 @@ https://tools.web100tsukuru.com/ のソースです。開発やデータ作業�
 ## しくみ
 
 - 変換はすべて**ブラウザの中の JavaScript**で行います。サーバーにはデータを送りません。
-- **Render の Static Site** で公開しています。`node scripts/build.mjs` で `public/` から `dist/` を作り、それを配ります。
+- **web100tsukuru.com の `/tools/` の下**で公開しています。web100tsukuru の `Dockerfile` が、このリポジトリの main の中身を取ってきて `BASE_PATH=/tools node scripts/build.mjs` で書き出し、一緒に配ります。
+  - **このリポジトリを更新したら、Render で web100tsukuru を作り直す（Manual Deploy）と反映されます。**
+- `node scripts/build.mjs` は `public/` から `dist/` を作ります。`BASE_PATH` を付けると、サイト内のリンクの頭にその文字が付きます。
 - 共通のヘッダー・フッターは `public/_partials/` にあり、各ページから SSI の書き方（`<!--# include ... -->`）で読み込んでいます。書き出しのときに埋め込まれます。
 - Excel の読み書きは [SheetJS](https://sheetjs.com/)、PDF の読み取りは [pdf.js](https://mozilla.github.io/pdf.js/) を `public/assets/vendor/` に置いて使っています。
 
