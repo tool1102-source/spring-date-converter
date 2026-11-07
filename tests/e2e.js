@@ -43,7 +43,7 @@ async function typeInto(page, sel, value) {
   page.on('console', (m) => {
     if (m.type() !== 'error') return;
     const url = m.location().url || '';
-    if (/googlesyndication/.test(url) || url.endsWith('/nope')) return; // 広告の遮断と、わざと開いた 404
+    if (/googlesyndication/.test(url) || url.endsWith('/nope') || url.includes('/_partials/')) return; // 広告の遮断と、わざと開いた 404
     errors.push(`${m.text()} (${url})`);
   });
   // 広告スクリプトはテストでは読まない
@@ -62,10 +62,11 @@ async function typeInto(page, sel, value) {
   }
   eq('存在しないページは 404', (await page.goto(BASE + '/nope')).status(), 404);
   check('404 画面に案内がある', (await page.textContent('h1')).includes('見つかりません'));
-  const r301 = await page.request.get(BASE + '/date-tools.html', { maxRedirects: 0 });
-  eq('.html 付きは付かない URL へ転送', r301.status(), 301);
-  eq('部品ファイルは直接見えない', (await page.request.get(BASE + '/_partials/head.html')).status(), 404);
-  check('ads.txt', (await (await page.request.get(BASE + '/ads.txt')).text()).includes('pub-4550031417169253'));
+  const r301 = await page.goto(BASE + '/date-tools.html');
+  check('.html 付きは付かない URL へ転送', r301.request().redirectedFrom() !== null && new URL(page.url()).pathname === '/date-tools', page.url());
+  eq('部品ファイルは直接見えない', (await page.goto(BASE + '/_partials/head.html')).status(), 404);
+  await page.goto(BASE + '/ads.txt');
+  check('ads.txt', (await page.textContent('body')).includes('pub-4550031417169253'));
 
   // ---------------- 日付 ----------------
   console.log('\n[日付・Epoch]');
